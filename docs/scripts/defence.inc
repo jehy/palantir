@@ -1,4 +1,5 @@
 <?
+
 function myslashes($str)
 {
   if(is_array($str))
