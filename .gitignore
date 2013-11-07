@@ -6,3 +6,7 @@ docs/uni/banners/imgs/*.jpeg
 
 #sape, linkfeed:
 *links.db
+
+#development
+
+.idea
