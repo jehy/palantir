@@ -1,10 +1,8 @@
 <?
 ob_start();
-if($_REQUEST['fuck']!='[eqdfv,slkbwj')
-  die('nope.');
 error_reporting(E_ALL ^ E_NOTICE);
-DEFINE('MAPFILE','sitemap_cache.xml');
-include('../scripts/common.inc');
+DEFINE('MAPFILE','../docs/sitemap.xml');
+include('../docs/scripts/common.inc');
 $c=0;
 if (file_exists(MAPFILE))
    if(date('d',filemtime(MAPFILE))!=date('d'))

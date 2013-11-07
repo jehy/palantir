@@ -15,8 +15,6 @@ RewriteCond %{HTTP_HOST} ^www.fantasy.d2.ru(.*) [NC]
 RewriteRule ^(.*)$ http://palantir.in%1/$1 [R=301,NC,L]
 
 
-RewriteRule sitemap.xml /bin/sitemap_cache.xml [L]
-
 RewriteRule ^pages/(.*)  http://palantir.in/404.html [R=301,L]
 RewriteRule ^4admin/(.*)  http://palantir.in/404.html [R=301,L]
 RewriteRule ^4user/(.*)  http://palantir.in/404.html [R=301,L]
