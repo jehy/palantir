@@ -1,5 +1,0 @@
-User-Agent: *
-Host: Palantir.in
-Disallow: /goto*
-Allow: /
-Sitemap: http://palantir.in/sitemap.xml
