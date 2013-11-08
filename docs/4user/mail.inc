@@ -8,8 +8,7 @@ if($very_secret_code=='false')
   
 $text='From IP:
 <b>'.$REMOTE_ADDR.'</b>
-and email <a href="mailto: '.$from1.'">'.$from1.'</a>';
-#<br><br>'.$text.'<br><br><a href="mailto: '.$from1.'?subject=Re:'.$subject.'">Reply to subject</a>';
+and email <a href="mailto: '.$from1.'">'.$from1.'</a><br><br>'.$text.'<br><br>';
 
 // Подключаем SMTP класс для работы с почтой
 include_once('smtp_class.php');
