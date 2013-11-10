@@ -1,8 +1,8 @@
 <?
 ob_start();
 error_reporting(E_ALL ^ E_NOTICE);
-DEFINE('MAPFILE','../docs/sitemap.xml');
-include('../docs/scripts/common.inc');
+DEFINE('MAPFILE','/web/palantir/docs/sitemap.xml');
+include('/web/palantir/docs/scripts/common.inc');
 $c=0;
 if (file_exists(MAPFILE))
    if(date('d',filemtime(MAPFILE))!=date('d'))
@@ -10,7 +10,7 @@ if (file_exists(MAPFILE))
 		if(touch(MAPFILE))
 		{
    			@set_time_limit(120);
-   			include('map.inc');
+   			include('/web/palantir/bin/map.inc');
 		}
 	}
 
