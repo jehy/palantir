@@ -1,8 +1,4 @@
 <?
-#include 'scripts/parasite.inc';
-#header('location: http://anidb.ru/uni/counters/standard/counter2007_20.png');
-#die();
-
 
 if(!is_numeric(@$_REQUEST['id']))die;
 else $id=$_REQUEST['id'];
@@ -19,8 +15,7 @@ $total_hosts=addslashes($_REQUEST['total_hosts']);
 if((!strpos($img,'.'))&&(($img!='')))$img.='.png';
 if((!strpos($pic,'.'))&&(($pic!='')))$pic.='.png';
 if(isset($_SERVER['HTTP_REFERER']))
-	#$ref=addslashes(iconv('utf8','cp1251',$_SERVER['HTTP_REFERER']));
-	$ref=addslashes($_SERVER['HTTP_REFERER']);
+    $ref=addslashes($_SERVER['HTTP_REFERER']);
 else $ref='';
 
 $agent=addslashes($_SERVER['HTTP_USER_AGENT']);
@@ -33,7 +28,7 @@ hEaDeR('Pragma: no-cache');
 include('scripts/fuck.inc');
 $ip_w=sprintf("%u",ip2long($_SERVER['REMOTE_ADDR']));
 include('scripts/common.inc');
-$sql='select * from addition where ((ip="'.$ip_w.'") and (site_id="'.$id.'")) limit 1';
+$sql='select 1 from addition where ((ip="'.$ip_w.'") and (site_id="'.$id.'")) limit 1';
 $result=sql($sql);
 $set='update sources set ';
 if($cid!='')
@@ -68,7 +63,7 @@ $uphosts='today_hosts=today_hosts+1, total_hosts=total_hosts+1';
 if(!mysql_num_rows($result))
 {
   $time=date("H");
-  $sql='INSERT INTO addition VALUES ("", '.$ip_w.', "'.$ref.'","'.$referer.'","'.$agent.'",'.$id.','.$time . ')';
+  $sql='INSERT INTO addition VALUES (NULL, '.$ip_w.', "'.$ref.'","'.$referer.'","'.$agent.'",'.$id.','.$time . ')';
   sql($sql);
   $sql=$set.$uphits.', '.$uphosts;
 }
