@@ -8,6 +8,9 @@ $type=addslashes(@$_REQUEST['type']);
 $cid=addslashes(@$_REQUEST['cid']);
 #$referer=addslashes(iconv('utf8','cp1251',$_REQUEST['referer']));
 $referer=addslashes($_REQUEST['referer']);
+if(!mb_check_encoding($referer, 'UTF-8'))
+    $referer=mb_convert_encoding($referer,'UTF-8');
+    
 $today_hits=addslashes($_REQUEST['today_hits']);
 $total_hits=addslashes($_REQUEST['total_hits']);
 $today_hosts=addslashes($_REQUEST['today_hosts']);
