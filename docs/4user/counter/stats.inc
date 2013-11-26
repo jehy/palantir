@@ -2,14 +2,21 @@
 if(!@$site_id)
 	$site_id=0;
 $own=0;
-$sql='select * from sources where (id="'.$site_id.'") limit 1';
+$sql='select hide_flags from sources where (id="'.$site_id.'") limit 1';
 $result=sql($sql);
 if(!mysql_num_rows($result))
 	die('Запрошенный сайт не найден!');
-$sql='select * from sources where ((user_id="'.$our_user_id.'")and(id="'.$site_id.'")) limit 1';
+
+$all=mysql_fetch_array($result);	
+	
+$hide_pages=$all['hide_flags'][0];
+$hide_referers=$all['hide_flags'][1];
+
+$sql='select hide_flags from sources where ((user_id="'.$our_user_id.'")and(id="'.$site_id.'")) limit 1';
 $result=sql($sql);
 if(mysql_num_rows($result))
 	$own=1;
+
 if($own)
 {
 ?>
@@ -18,9 +25,22 @@ if($own)
 }
 ?><a href='?page=stats&site_id=<?=$site_id;?>'>Вернуться в статистику</a><br><?
 if($ac=='vistime')include('4user/counter/vistime.inc');
-elseif($ac=='vispages')include('4user/counter/vispages.inc');
-elseif($ac=='visstats')include('4user/counter/visstats.inc');
-elseif($ac=='referers')include('4user/counter/referers.inc');
+elseif($ac=='vispages')
+{
+    if(!$own && $hide_pages)
+	echo '<h2>Доступ к статистике данного сайта закрыт!</h2>';
+    else
+	include('4user/counter/vispages.inc');
+}
+elseif($ac=='visstats')
+    include('4user/counter/visstats.inc');
+elseif($ac=='referers')
+{
+    if(!$own && $hide_referers)
+	echo '<h2>Доступ к статистике данного сайта закрыт!</h2>';
+    else
+	include('4user/counter/referers.inc');
+}
 else
 {
 ?>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="http://palantir.in/etc/sitemap.xsl"?>
-   <!-- generated-on="November 26, 2013 12: 00 am" -->
+   <!-- generated-on="November 27, 2013 12: 00 am" -->
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
   <loc>http://palantir.in/</loc>
@@ -4533,6 +4533,11 @@
 </url>
 <url>
   <loc>http://palantir.in/top/RPG/316.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/RPG/317.html</loc>
   <priority>0.5</priority>
   <changefreq>always</changefreq>
 </url>

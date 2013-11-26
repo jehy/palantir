@@ -171,7 +171,7 @@ if (!$error)
 {
   sql('DELETE from `check` where `ip`="'.ip2long($_SERVER['REMOTE_ADDR']).'"');
   $sql = 'INSERT INTO sources VALUES
-  ("", "'.$reg['name'].'", "'.$reg['description'].'", "'.$sid.'", "'.$reg['url'].'", "'.$date.'", 0, 0,0,0,"'.$our_user_id.'",0,0)';
+  ("", "'.$reg['name'].'", "'.$reg['description'].'", "'.$sid.'", "'.$reg['url'].'", "'.$date.'", 0, 0,0,0,"'.$our_user_id.'",0,0,"00")';
   #echo $sql;
   $result=sql($sql);
   if(mysql_affected_rows())echo'<h1>Добавление сайта, шаг №3</h1><div width=500>Сайт зарегестрирован успешно!<br>Теперь вы можете воспользоваться нашими сервисами на <a href="index.php?page=user">странице администрирования</a></div>';

@@ -75,7 +75,7 @@ function f_connect()
   #@mysql_select_db('seoman', $db);
   $db = @mysql_connect('localhost', 'palantir', 'gfkfynbh');
   @mysql_select_db('palantir', $db);
-  mysql_query('set names utf8');
+  #mysql_query('set names utf8');
 }
 f_connect();
 DEFINE('DEBUG',1);

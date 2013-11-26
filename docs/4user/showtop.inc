@@ -6,7 +6,7 @@ $from2=($frompage-1)*TOP;
 
 if(!isset($katid)){$katid=13;}
 
-$sql='select `name`,`name_eng` from `types` where id="'.$katid.'"';
+$sql='select `name`,`name_eng` from `types` where id="'.$katid.'" limit 1';
 $result=sql($sql);
 $row=mysql_fetch_row($result);
 $katname=$row[1];
@@ -14,7 +14,7 @@ $Kat_Name_Rus=$row[0];
 
 $s_num=CountPages($katid);
 $kats=GetKats($katid,1);
-$sql='select sources.id,sources.name,sources.url,sources.description,sources.today_hosts,today_hits,types.name as kat from sources,types where ((sources.parent in('.$kats.'))and(sources.parent=types.id)) order by today_hosts desc,sources.name limit '.$from2.','.TOP;
+$sql='select sources.id,sources.name,sources.url,sources.description,sources.today_hosts,today_hits,sources.hide_flags from sources where sources.parent in('.$kats.') order by today_hosts desc,sources.name limit '.$from2.','.TOP;
 $num=$from2+1;
 #echo $sql;
 $result=sql($sql);
@@ -46,8 +46,10 @@ if(!mysql_num_rows($result))
 $a=1;
 while($all=mysql_fetch_array($result))
 {
+    $hide_pages=$all['hide_flags'][0];
+    $hide_referers=$all['hide_flags'][1];
+
 $a=-$a;
-//$type=mysql_fetch_array(sql("select * from types where id=$all[parent]"));
 if($a!=1){$bg_im='dark';}else{$bg_im='white';}
 $srcblock.='<tr align="center" class="bg'.$bg_im.'" id="Row'.$all['id'].'">
 <td style="padding-left:20px;" class="nobg" height="40">'.$num.'</td>
@@ -58,20 +60,26 @@ $srcblock.='<tr align="center" class="bg'.$bg_im.'" id="Row'.$all['id'].'">
 
 if($all['today_hosts'])
 {
+    if(!$hide_pages)
+    {
 	$sql2='select count(*) from addition where site_id="'.$all['id'].'" and referer<>""';
 	$result2=mysql_query($sql2);
 	$row=mysql_fetch_row($result2);
 	$ref1=$row[0];
 
+	if($ref1>0)
+		$srcblock.='<a href="'.COMMON_URL.'index.php?page=stats&ac=vispages&site_id='.$all['id'].'"><img border="0" src="'.COMMON_URL.'graphic/what.gif" title="Посещённые страницы сайта"></a>';
+    }
+    if(!$hide_referers)
+    {	
 	$sql2='select count(*) from addition where site_id="'.$all['id'].'" and referer2<>""';
 	$result2=mysql_query($sql2);
 	$row=mysql_fetch_row($result2);
 	$ref2=$row[0];
-
-	if($ref1>0)
-		$srcblock.='<a href="'.COMMON_URL.'index.php?page=stats&ac=vispages&site_id='.$all['id'].'"><img border="0" src="'.COMMON_URL.'graphic/what.gif" title="Посещённые страницы сайта"></a>';
+	
 	if($ref2>0)
 		$srcblock.='<a href="'.COMMON_URL.'index.php?page=stats&ac=referers&site_id='.$all['id'].'"><img border="0" src="'.COMMON_URL.'graphic/from.gif" title="Откуда посещали сайт"></a>';
+    }
 }
 $srcblock.='</td>
 </tr>';

@@ -1,6 +1,9 @@
 Имеются в виду страницы, с которых попадали на сайт уникальные посетители<br>
 
 <?
+
+mb_internal_encoding("UTF-8");
+
 function is_blog($url)
 {
 	$bl=array('liveinternet.ru', 'livejournal.com','diary.ru','vkontakte.ru', 'ya.ru','blogs.mail.ru', 'myspace.com', 'facebook.com','twitter.com');
