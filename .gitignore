@@ -3,6 +3,7 @@
 docs/uni/banners/imgs/*.gif
 docs/uni/banners/imgs/*.png
 docs/uni/banners/imgs/*.jpeg
+docs/sitemap.xml
 
 #sape, linkfeed:
 *links.db
