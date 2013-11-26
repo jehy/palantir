@@ -2,13 +2,18 @@
 Полученный код необходимо разместить на страницах вашего сайта:<br>
 Код:<br><br><?
 $img=COMMON_URL.'count.php?id='.$site_id;
-if($today_hits)$img.='&amp;today_hits=1';
-if($today_hosts)$img.='&amp;today_hosts=1';
-if($total_hits)$img.='&amp;total_hits=1';
-if($total_hosts)$img.='&amp;total_hosts=1';
+if($today_hits)
+    $img.='&amp;today_hits=1';
+if($today_hosts)
+    $img.='&amp;today_hosts=1';
+if($total_hits)
+    $img.='&amp;total_hits=1';
+if($total_hosts)
+    $img.='&amp;total_hosts=1';
 $img.='&amp;cid='.$cid;
-function showCNT($t=0)
-{global $img,$site_id;
+
+function showCNT($t=0,$img,$site_id)
+{
 
 if($t){
 ?>
@@ -29,15 +34,15 @@ else
 ?>
 Новый код, с яваскрипт и полной статистикой:<br>
 <textarea readonly cols="80" rows="6">
-<?showCNT(1);?>
+<?showCNT(1,$img,$site_id);?>
 </textarea>
 	
 Старый вариант, без яваскрипта и без расширенной статистики:<br>
 <textarea readonly cols="80" rows="6">
-<?showCNT();?>
+<?showCNT(0,$img,$site_id);?>
 </textarea>
 <br>На сайте это будет выглядеть так:<br><br>
-<?showCNT();?><br>
+<?showCNT(0,$img,$site_id);?><br>
 Приятного вам посчёта!
 
 <br><br>

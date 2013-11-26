@@ -21,6 +21,7 @@ RewriteRule ^4user/(.*)  http://palantir.in/404.html [R=301,L]
 RewriteRule ^scripts/(.*)  http://palantir.in/404.html [R=301,L]
 RewriteRule (.*).inc(.*)  http://palantir.in/404.html [R=301,L]
 
+RewriteRule ^uni/counters/standard/concept6.png(.*) http://palantir.in/uni/counters/standard/concept6.png [R=301,L]
 
 
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="http://palantir.in/etc/sitemap.xsl"?>
-   <!-- generated-on="November 12, 2013 12: 00 am" -->
+   <!-- generated-on="November 26, 2013 12: 00 am" -->
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
   <loc>http://palantir.in/</loc>
@@ -2447,6 +2447,36 @@
   <changefreq>always</changefreq>
 </url>
 <url>
+  <loc>http://palantir.in/top/Fantasy/484.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Fantasy/485.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Fantasy/486.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Fantasy/487.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Fantasy/488.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Fantasy/489.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
   <loc>http://palantir.in/top/Fan_Sites.html</loc>
   <priority>0.7</priority>
   <changefreq>always</changefreq>
@@ -2803,6 +2833,36 @@
 </url>
 <url>
   <loc>http://palantir.in/top/Other/17.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Other/18.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Other/19.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Other/20.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Other/21.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Other/22.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Other/23.html</loc>
   <priority>0.5</priority>
   <changefreq>always</changefreq>
 </url>
@@ -4708,6 +4768,11 @@
 </url>
 <url>
   <loc>http://palantir.in/top/Harry_Potter/47.html</loc>
+  <priority>0.5</priority>
+  <changefreq>always</changefreq>
+</url>
+<url>
+  <loc>http://palantir.in/top/Harry_Potter/48.html</loc>
   <priority>0.5</priority>
   <changefreq>always</changefreq>
 </url>

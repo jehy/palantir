@@ -21,6 +21,10 @@ if(isset($_SERVER['HTTP_REFERER']))
     $ref=addslashes($_SERVER['HTTP_REFERER']);
 else $ref='';
 
+
+if(stripos($ref,'lifesoccer.ru') || stripos ($ref,'lifesoccer.ru'))
+    Header('Location: http://palantir.in/uni/counters/standard/1_2.png');
+
 $agent=addslashes($_SERVER['HTTP_USER_AGENT']);
 $errors='';
 Header('Expires: Mon, 26 Jul 2002 05:00:00 GMT');
