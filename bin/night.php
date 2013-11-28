@@ -1,19 +1,27 @@
 <?
-ob_start();
+#ob_start();
 error_reporting(E_ALL ^ E_NOTICE);
+echo "\n Starting refresh script, time ".date('Y-m-d H:i:s').":\n";
+$t1=microtime();
 DEFINE('MAPFILE','/web/palantir/docs/sitemap.xml');
 include('/web/palantir/docs/scripts/common.inc');
+#function sql($q)
+#{return false;
+#}
+
 $c=0;
 if (file_exists(MAPFILE))
    if(date('d',filemtime(MAPFILE))!=date('d'))
 	{
+	    echo "\nGenerating sitemap\n";
 		if(touch(MAPFILE))
 		{
-   			@set_time_limit(120);
+   			set_time_limit(120);
    			include('/web/palantir/bin/map.inc');
 		}
 	}
 
+echo "\n Updating banner stats \n";
 ////drop those who have no active banners but have shows
 $sql='SELECT s.site_id FROM shows s LEFT JOIN banners b ON (s.site_id=b.site_id AND b.type=s.type AND b.status=1 )WHERE  b.id IS NULL';
 $result=sql($sql);
@@ -50,6 +58,8 @@ $sql='UPDATE `banners` b SET shown=shown+(SELECT COUNT(banner_id) FROM `go` WHER
 sql($sql);
 
 
+
+echo "\n Resetting counters \n";
 ////////////////////////////// counter reset
 $sql='update `sources` set today_hosts=0,today_hits=0';
 sql($sql);
@@ -69,12 +79,16 @@ $d=date("d");
 $sql="delete from `clicks` where ((date<($d-3)) or (date>$d))";
 sql($sql);
 
-echo 'Request info: '."\n";
-print_R($_REQUEST);
-echo 'Server info: '."\n";
-print_R($_SERVER);
-$buffer=ob_get_contents();
-ob_end_flush();
+$t2=microtime();
+
+echo "\nScript completed in ".(($t2-$t1)/1000/1000)." seconds";
+
+#echo 'Request info: '."\n";
+#print_R($_REQUEST);
+#echo 'Server info: '."\n";
+#print_R($_SERVER);
+#$buffer=ob_get_contents();
+#ob_end_flush();
 #mail('fate@jehy.ru','Refresh counters OK','Happened: '.date('Y-m-d')."\n".'Script output: '.$buffer);
 
 ?>
