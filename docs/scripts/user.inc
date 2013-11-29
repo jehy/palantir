@@ -77,7 +77,7 @@ function get_user_type()
   }
 //checking admin authorisation
   $sql = 'select id from auth where login="' . $clogin . '" and pass="' . $cpassword . '"';
-  echo '<! -- temp' . $sql . '-->';
+  #echo '<! -- temp' . $sql . '-->';
   $result = sql($sql);
   if (mysql_num_rows($result))
   {
