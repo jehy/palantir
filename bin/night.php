@@ -81,7 +81,9 @@ sql($sql);
 
 $t2=microtime();
 
-echo "\nScript completed in ".(($t2-$t1)/1000/1000)." seconds";
+#echo "\nScript completed in ".(($t2-$t1)/1000/1000)." seconds";
+echo "\n Script completed on ".date('Y-m-d H:i:s');
+
 
 #echo 'Request info: '."\n";
 #print_R($_REQUEST);
