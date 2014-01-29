@@ -102,7 +102,10 @@ else
           Сожалеем, если письмо пришло к вам по ошибке. Если такие случаи будут повторяться, вы можете <a href="'.COMMON_URL.'index.php?page=mail">связаться с администрацией</a>.</body></html>';
           // Вложение в письме - адрес к файлу
           
-          $m=mail($Receiver, $Subject, $Text);
+  $headers  = 'MIME-Version: 1.0' . "\r\n";
+  $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+
+          $m=mail($Receiver, $Subject, $Text,$headers);
           if($m) {
               echo '<br>Пользователь найден, выслано напоминание пароля.<br>';
           }
