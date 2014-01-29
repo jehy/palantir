@@ -77,18 +77,6 @@ else
             increment_queries($row['id']);
         if(!sizeof($err))
         {
-          // Подключаем SMTP класс для работы с почтой
-          include_once('smtp_class.php');
-
-          // Конфигурационный массив
-          $SenderConfig = array(
-              "SMTP_server"   =>  "smtp.jino.ru",
-              "SMTP_port"     =>  "465",
-              "SMTP_email"    =>  "mailer@jehy.jino.ru",
-              "SMTP_pass"     =>  "tutturu",
-              "SMTP_type"     =>  "ssl"
-          );
-
           // Email получателя/Получателей
           $Receiver = $row['email'];
           // Тема сообщения
@@ -113,27 +101,13 @@ else
           Приятного вам подсчёта и баннерообмена!<hr>
           Сожалеем, если письмо пришло к вам по ошибке. Если такие случаи будут повторяться, вы можете <a href="'.COMMON_URL.'index.php?page=mail">связаться с администрацией</a>.</body></html>';
           // Вложение в письме - адрес к файлу
-          $Attachment = '';
-
-          /* $mail = new KM_Mailer(сервер, порт, пользователь, пароль, тип); */
-          /* Тип может быть: null, tls или ssl */
-          $mail = new KM_Mailer($SenderConfig['SMTP_server'], $SenderConfig['SMTP_port'], $SenderConfig['SMTP_email'], $SenderConfig['SMTP_pass'], $SenderConfig['SMTP_type']);
-          if($mail->isLogin) {
-              // Прикрепить файл
-
-
-              /* $mail->send(От, Для, Тема, Текст, Заголовок = опционально) */
-              $SendMail = $mail->send($SenderConfig['SMTP_email'], $Receiver, $Subject, $Text);
-              
-              // Очищаем список получателей
-              $mail->clearRecipients();
-              $mail->clearCC();
-              $mail->clearBCC();
-              $mail->clearAttachments();
+          
+          $m=mail($Receiver, $Subject, $Text)
+          if($m) {
               echo '<br>Пользователь найден, выслано напоминание пароля.<br>';
           }
            else {
-              echo "Возникла ошибка во время подключения к SMTP-серверу<br />";
+              echo "Возникла ошибка во время отсылки напоминания пароля.<br />";
            }
           }
       }
