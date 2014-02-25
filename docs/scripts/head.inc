@@ -49,7 +49,9 @@ if(!$keywords1)
 <meta name="Description" content="<?=$description1;?>">
 <meta name="Keywords" content="<?=$keywords1;?>">
 <link rel="stylesheet" href="<?=COMMON_URL;?>etc/stl.css" type="text/css">
-<script type="text/javascript" src="<?=COMMON_URL;?>etc/top.js"></script>
+<!--<script type="text/javascript" src="<?=COMMON_URL;?>etc/top.js"></script> troll top -->
+<script type="text/javascript" src="<?=COMMON_URL;?>etc/metric.js"></script>
+
 </head>
 <body>
 <table class="main" cellpadding="0" cellspacing="0" border="0" align="center">
@@ -70,6 +72,17 @@ if(!$keywords1)
 <font   size="-1">За сегодня показов банеров:</font>&nbsp;<?$row=mysql_fetch_row(sql("select count(*) from go"));echo $row[0];?>
 
 <br>
+
+<!-- Yandex.Metrika informer -->
+<!--<a href="https://metrika.yandex.ru/stat/?id=24112042&amp;from=informer"
+target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/24112042/3_0_000080FF_000080FF_1_pageviews"
+style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:24112042,lang:'ru'});return false}catch(e){}"/></a>
+-->
+<!-- /Yandex.Metrika informer -->
+<noscript><div><img src="//mc.yandex.ru/watch/24112042" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+
 <script type="text/javascript">
 Md=document;Mnv=navigator;
 Mrn=Math.random();Mn=(Mnv.appName.substring(0,2)=="Mi")?0:1;Mp=0;Mz="p="+Mp+"&";

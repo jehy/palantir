@@ -1,4 +1,10 @@
 <?
+
+
+#$t=microtime()-1000-rand(0,1000);
+#$path='http://www.ratingruneta.ru/awards_vote/vote.php?_='.$t.'&site_id=651&vote=1';
+#Header('Location: '.$path);
+#die();
 Header("Expires: Mon, 26 Jul 2002 05:00:00 GMT");
 HEADER("Last-Modified: ".gmdate("D, d M Y H:i:s")."GMT");
 HeAdEr("Cache-Control: no-cache, must-revalidate");
