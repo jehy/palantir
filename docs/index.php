@@ -80,7 +80,7 @@ if ((isset($from)) && (isset($rand))) //perehod
         <div style="height:30px;"> &nbsp; </div>
       Большое спасибо за использование баннерной системы <a target="_blank" href="<?=COMMON_URL;?>">"Палантир"</a><br>
       Через пять секунд вы будете направлены на сайт "<?=$row['name']?>";<br>
-      Если этого не случилось - нажмите <a href="<?=$row['url']?>">на эту ссылку.</a></div>
+      Если этого не случилось - нажмите <a href="<?=$row['url']?>">на эту ссылку.</a>
         
         <div style="height:30px;"> &nbsp; </div>
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -91,7 +91,7 @@ if ((isset($from)) && (isset($rand))) //perehod
      data-ad-slot="8654483999"></ins>
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+</script></div>
 <div style="height:30px;"> &nbsp; </div>
   
   </body>
