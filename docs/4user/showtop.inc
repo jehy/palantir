@@ -97,6 +97,7 @@ $num++;
 SetSite("<?=$Kat_Name_Rus;?>");
 </script>
 
+<div style="height:30px;"> &nbsp; </div>
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- header ad -->
 <ins class="adsbygoogle"
@@ -106,6 +107,6 @@ SetSite("<?=$Kat_Name_Rus;?>");
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-<div style="height:100px;"> &nbsp; </div>
+<div style="height:30px;"> &nbsp; </div>
 
 <?unset($srcblock,$all,$showpages,$uprowtitle);?>
