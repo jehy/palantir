@@ -106,6 +106,6 @@ SetSite("<?=$Kat_Name_Rus;?>");
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-
+<div style="height:100px;"> &nbsp; </div>
 
 <?unset($srcblock,$all,$showpages,$uprowtitle);?>
