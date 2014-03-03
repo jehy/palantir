@@ -60,7 +60,7 @@ if ((isset($from)) && (isset($rand))) //perehod
   <html>
   <head>
       <STYLE TYPE="text/css">body {
-          background-color: 6 F7F8F;
+          background-color: #6F7F8F;
       }
 
       A:visited {
