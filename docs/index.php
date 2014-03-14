@@ -72,16 +72,17 @@ if ((isset($from)) && (isset($rand))) //perehod
       }</style>
       <LINK REL="SHORTCUT ICON" HREF="<?=COMMON_URL;?>favicon.ico">
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-      <META http-equiv="refresh" content="5; URL=<?=$row['url'];?>">
+      <META http-equiv="refresh" content="2; URL=<?=$row['url'];?>">
   </head>
   <body>
   <div align="center">
         
         <div style="height:30px;"> &nbsp; </div>
       Большое спасибо за использование баннерной системы <a target="_blank" href="<?=COMMON_URL;?>">"Палантир"</a><br>
-      Через пять секунд вы будете направлены на сайт "<?=$row['name']?>";<br>
+      Через две секунды вы будете направлены на сайт "<?=$row['name']?>";<br>
       Если этого не случилось - нажмите <a href="<?=$row['url']?>">на эту ссылку.</a>
         
+        <?/* adsense
         <div style="height:30px;"> &nbsp; </div>
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- header ad -->
@@ -93,7 +94,7 @@ if ((isset($from)) && (isset($rand))) //perehod
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script></div>
 <div style="height:30px;"> &nbsp; </div>
-  
+  */?>
   </body>
   </html><?die();
   }
