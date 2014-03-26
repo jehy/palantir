@@ -11,10 +11,10 @@ $referer=addslashes($_REQUEST['referer']);
 if(!mb_check_encoding($referer, 'UTF-8'))
     $referer=mb_convert_encoding($referer,'UTF-8');
     
-$today_hits=addslashes($_REQUEST['today_hits']);
-$total_hits=addslashes($_REQUEST['total_hits']);
-$today_hosts=addslashes($_REQUEST['today_hosts']);
-$total_hosts=addslashes($_REQUEST['total_hosts']);
+$today_hits=addslashes(@$_REQUEST['today_hits']);
+$total_hits=addslashes(@$_REQUEST['total_hits']);
+$today_hosts=addslashes(@$_REQUEST['today_hosts']);
+$total_hosts=addslashes(@$_REQUEST['total_hosts']);
 if((!strpos($img,'.'))&&(($img!='')))$img.='.png';
 if((!strpos($pic,'.'))&&(($pic!='')))$pic.='.png';
 if(isset($_SERVER['HTTP_REFERER']))
