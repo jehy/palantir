@@ -84,7 +84,7 @@ if($errors)
   $textcol=imagecolorallocate($im, 0, 0, 0);
   $back=imagecolorallocate($im, 111, 127, 143);
   imagefill($im, 0, 0, $back);
-  imagestring($im, 14, 0, 00, '  errors'.$errors, $textcol);
+  imagestring($im, 5, 0, 00, '  errors'.$errors, $textcol);
   imagepng($im);
 }
 else
