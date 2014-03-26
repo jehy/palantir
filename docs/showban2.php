@@ -4,10 +4,10 @@ Header('Expires: Mon, 26 Jul 2002 05:00:00 GMT');
 HEADER('Last-Modified: '.gmdate('D, d M Y H:i:s').'GMT');
 HeAdEr('Cache-Control: no-cache, must-revalidate');
 hEaDeR('Pragma: no-cache');
-$url=addslashes($_GET['url']);
+$url=addslashes(@$_GET['url']);
 if(!is_numeric($type=$_GET['type']))exit;
 if(!is_numeric($from=$_GET['from']))exit;
-if((!is_numeric($rand=$_GET['rand'])and($rand)))exit;
+if((!is_numeric($rand=@$_GET['rand'])and($rand)))exit;
 $ip_w=ip2long($_SERVER['REMOTE_ADDR']);
 $id=$from;
 include('scripts/fuck.inc');
@@ -55,22 +55,23 @@ else  //site id for show couldn`t be selected
   $textcol=imagecolorallocate($im, 0, 0, 0);
   $back=imagecolorallocate($im, 111, 127, 143);
   imagefill($im, 0, 0, $back);
+Header('Content-type: image/png');
   if ($type==1)
-    {imagestring($im, 6, 1, 0, "Error-your", $textcol);
-    imagestring($im, 6, 1, 8, "banner not", $textcol);
-    imagestring($im, 6, 1, 18, "uploaded!", $textcol);}
+    {imagestring($im, 5, 1, 0, "Error-your", $textcol);
+    imagestring($im, 5, 1, 8, "banner not", $textcol);
+    imagestring($im, 5, 1, 18, "uploaded!", $textcol);}
   elseif ($type==2)
-    {imagestring($im, 14, 3, 00,"You have", $textcol);
-    imagestring($im, 14, 1, 14, "Error in", $textcol);
-    imagestring($im, 14, 3, 28, "banner code", $textcol);
-    imagestring($im, 14, 3, 42, "or YOU", $textcol);
-    imagestring($im, 14, 3, 56, "DIDN`T", $textcol);
-    imagestring($im, 14, 1, 70, "upload YOUR", $textcol);
-    imagestring($im, 14, 3, 84, "BANNER!!", $textcol);}
+    {imagestring($im, 5, 3, 00,"You have", $textcol);
+    imagestring($im, 5, 1, 14, "Error in", $textcol);
+    imagestring($im, 5, 3, 28, "banner code", $textcol);
+    imagestring($im, 5, 3, 42, "or YOU", $textcol);
+    imagestring($im, 5, 3, 56, "DIDN`T", $textcol);
+    imagestring($im, 5, 1, 70, "upload YOUR", $textcol);
+    imagestring($im, 5, 3, 84, "BANNER!!", $textcol);}
   elseif ($type==3)
-    {imagestring($im, 14, 3, 00, "Banner network error: you have error in code,", $textcol);
-    imagestring($im, 14, 3, 20, "your site doesn`t exist in system or ", $textcol);
-    imagestring($im, 18, 3, 40, "YOUR OWN BANNER ISN`T UPLOADED!!", $textcol);}
+    {imagestring($im, 5, 3, 00, "Banner network error: you have error in code,", $textcol);
+    imagestring($im, 5, 3, 20, "your site doesn`t exist in system or ", $textcol);
+    imagestring($im, 5, 3, 40, "YOUR OWN BANNER ISN`T UPLOADED!!", $textcol);}
   imagepng($im);
 }
 /*else  //there is no such site or such banner
