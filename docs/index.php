@@ -111,8 +111,17 @@ if ($from)
   if (mysql_num_rows($result))
   {
     $row = mysql_fetch_array($result);
-    $sql = 'SELECT `id` FROM `sources` WHERE ((parent=' . $row['parent'] . ')and((today_hosts>"' . $row['today_hosts'] . '")or(name<"' . addslashes($row['name']) . '")and(today_hosts="' . $row['today_hosts'] . '")))';
-    #$sql='select id from sources where ((today_hosts>='.$row['today_hosts'].')and(name<"'.$row['name'].'"))';
+    $sql = 'SELECT `id` FROM `sources` WHERE 
+(
+    (parent=' . $row['parent'] . ')and
+    (
+	(today_hosts>"' . $row['today_hosts'] . '")
+	or(name<"' . addslashes($row['name']) . '")
+	and(today_hosts="' . $row['today_hosts'] . '")
+    )
+)';
+    #$sql='select count(1) from `sources` where '
+#$sql='select id from sources where ((today_hosts>='.$row['today_hosts'].')and(name<"'.$row['name'].'"))';
     #die($sql);
     $result = sql($sql);
     $frompage = ceil((mysql_num_rows($result) + 1) / TOP);
