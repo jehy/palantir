@@ -49,7 +49,7 @@ if(!$keywords1)
 <meta name="Description" content="<?=$description1;?>">
 <meta name="Keywords" content="<?=$keywords1;?>">
 <link rel="stylesheet" href="<?=COMMON_URL;?>etc/stl.css" type="text/css">
-<!--<script type="text/javascript" src="<?=COMMON_URL;?>etc/top.js"></script> troll top -->
+<script type="text/javascript" src="<?=COMMON_URL;?>etc/top.js"></script>
 <script type="text/javascript" src="<?=COMMON_URL;?>etc/metric.js"></script>
 
 </head>
