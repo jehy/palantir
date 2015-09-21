@@ -1,9 +1,11 @@
 <?
+/*
 #jehy redirect system
 
 if (@$_REQUEST['redirect_c'] && $_SERVER['SCRIPT_URL'] == '/')
     die('<html><head></head><body><script language="javascript">window.location = "' . $_REQUEST['redirect_c'] . '";</script></body></html>');
 setcookie('redirect_c', '', 0, '/');
+*/
 
 $REQUEST_URI = $_SERVER['REQUEST_URI'];
 $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];
@@ -12,7 +14,7 @@ $t = microtime();
 include('scripts/common.inc');
 include('scripts/defence.inc');
 $mirror = '';
-#include('checkup.php');###TEMPORARY!! While only 1 mirror! Or user will die, waiting!
+
 include('scripts/user.inc');
 authorisate();
 get_user_type();
@@ -157,7 +159,7 @@ if (strpos($u, '.html')) {
 if ($katname) {
     $sql = 'select `id` from `types` where `name_eng`=?';
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param('i', $katname);
+    $stmt->bind_param('s', $katname);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows) {

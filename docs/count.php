@@ -1,10 +1,11 @@
 <?
-
-if (!is_numeric(@$_REQUEST['id'])) die;
-else $id = $_REQUEST['id'];
+error_reporting(E_ALL);
+$id = $_REQUEST['id'];
+$referer = $_REQUEST['referer'];
+$img = $_REQUEST['img'];
+$pic = $_REQUEST['pic'];
 if (!mb_check_encoding($referer, 'UTF-8'))
     $referer = mb_convert_encoding($referer, 'UTF-8');
-
 if ((!strpos($img, '.')) && (($img != ''))) $img .= '.png';
 if ((!strpos($pic, '.')) && (($pic != ''))) $pic .= '.png';
 $ref = $_SERVER['HTTP_REFERER'];
@@ -14,9 +15,9 @@ $ip_w = sprintf("%u", ip2long($_SERVER['REMOTE_ADDR']));
 $errors = '';
 
 Header('Expires: Mon, 26 Jul 2002 05:00:00 GMT');
-HEADER('Last-Modified: ' . gmdate('D, d M Y H:i:s') . 'GMT');
-HeAdEr('Cache-Control: no-cache, must-revalidate');
-hEaDeR('Pragma: no-cache');
+Header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . 'GMT');
+Header('Cache-Control: no-cache, must-revalidate');
+Header('Pragma: no-cache');
 
 include('scripts/common.inc');
 $sql = 'select 1 from addition where ((ip=?) and (site_id=?)) limit 1';
@@ -60,7 +61,6 @@ $stmt->execute();
 if ($mysqli->affected_rows != 1)
     $errors = $errors . "1";
 if ($errors) {
-    mysql_close();
     $im = imageCreate(88, 31);
     $textcol = imagecolorallocate($im, 0, 0, 0);
     $back = imagecolorallocate($im, 111, 127, 143);
@@ -71,7 +71,6 @@ if ($errors) {
     $mirror = get_mirror();
     ##################   OLD, SAVED FOR COMPATIBILITY
     if (@$_GET['pic']) {
-        mysql_close();
         Header('location: ' . $mirror['url'] . 'counters/standard/' . @$pic);
     } elseif (@$_GET['img']) {
         $sql = 'select today_hosts,today_hits,total_hosts,total_hits from sources where id=? limit 1';
@@ -85,11 +84,9 @@ if ($errors) {
     } ####################   NEW
     elseif (@$cid) {
         if (!$today_hits && !$total_hits && !$today_hosts && !$total_hosts) {
-            mysql_close();
             Header('location: ' . $mirror['url'] . 'counters/standard/' . @$cid);
         } else {
             $sql = 'select today_hosts,today_hits,total_hosts,total_hits from sources where id=? limit 1';
-
             $stmt = $mysqli->prepare($sql);
             $stmt->bind_param('i', $id);
             $stmt->execute();
@@ -98,7 +95,8 @@ if ($errors) {
                 $row = $result->fetch_array(MYSQLI_ASSOC);
             if ($today_hosts & $today_hits & $total_hosts) {
                 Header('location: ' . $mirror['url'] . 'counters/count.php?cid=' . $cid . '&today_hits=' . $row['today_hits'] . '&today_hosts=' . $row['today_hosts'] . '&total_hosts=' . $row['total_hosts']);
-            } elseif ($today_hosts & $total_hosts) Header('location: ' . $mirror['url'] . 'counters/count.php?cid=' . $cid . '&today_hosts=' . $row['today_hosts'] . '&total_hosts=' . $row['total_hosts']);
+            } elseif ($today_hosts & $total_hosts)
+                Header('location: ' . $mirror['url'] . 'counters/count.php?cid=' . $cid . '&today_hosts=' . $row['today_hosts'] . '&total_hosts=' . $row['total_hosts']);
         }
     }
 }
