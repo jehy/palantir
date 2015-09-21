@@ -1,4 +1,7 @@
-<h2>Загрузка банера к пользовательскому сайту:</h2>
+<?
+die('Old shit!');
+
+?><h2>Загрузка банера к пользовательскому сайту:</h2>
 <a href='?page=42'>Вернуться в админ центр</a><br>
 <form action='http://valar.ru/2b/cavupload.php' method='post' enctype='multipart/form-data'>
 Стандарт баннерной сети для закачиваемого баннера:<br>

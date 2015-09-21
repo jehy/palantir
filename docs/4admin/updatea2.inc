@@ -1,8 +1,12 @@
-<?$sql="update sources set parent=$parent, name='$name', login='$login', url='$url', today_hosts='$today_hosts', email='$email', password='$password2', description='$description' where id=$id";
+<?
+
+die('Not rewritten!');
+
+$sql = "update sources set parent=$parent, name='$name', login='$login', url='$url', today_hosts='$today_hosts', email='$email', password='$password2', description='$description' where id=$id";
 sql($sql);
-$sql="select * from sources where id=$id";
+$sql = "select * from sources where id=$id";
 $result = sql($sql);
-$row=mysql_fetch_array($result);
+$row = mysql_fetch_array($result);
 echo "<h3 align='center'>Данные изменены</h3><a href='?page=18'>Вернуться к администрированию</a>
 <TABLE width='100%'>
     <TD colSpan=2>
