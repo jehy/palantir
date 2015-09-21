@@ -167,7 +167,7 @@ if (@$action == 'DeleteSrc')
     }
     echo '</tr>';
     echo '</table>';
-    mysql_free_result($result);
+    #mysql_free_result($result);
 } elseif ($action == 'EditSrc') {
     if (@$step != 2) {
         $sql = 'select * from sources where id="' . $show_id . '" limit 1';

@@ -196,7 +196,6 @@ if ($result->num_rows)
             }
         }
     }
-mysql_free_result($result);
 
 if (sizeof($visits) || sizeof($engines))
 {

@@ -10,9 +10,9 @@ if (!isset($katid)) {
 
 $sql = 'select `name`,`name_eng` from `types` where id="' . $katid . '" limit 1';
 $result = sql($sql);
-$row = mysql_fetch_row($result);
-$katname = $row[1];
-$Kat_Name_Rus = $row[0];
+$row = $result->fetch_array(MYSQLI_ASSOC);
+$katname = $row['name_eng'];
+$Kat_Name_Rus = $row['name'];
 
 $s_num = CountPages($katid);
 $kats = GetKats($katid, 1);
@@ -70,7 +70,7 @@ while ($all = $result->fetch_array(MYSQLI_ASSOC)) {
                 $srcblock .= '<a href="' . COMMON_URL . 'index.php?page=stats&ac=vispages&site_id=' . $all['id'] . '"><img border="0" src="' . COMMON_URL . 'graphic/what.gif" title="Посещённые страницы сайта"></a>';
         }
         if (!$hide_referers) {
-            $sql2 = 'select count(*) from addition where site_id="' . $all['id'] . '" and referer2<>""';
+            $sql2 = 'select count(*) from addition where site_id=? and referer2<>""';
             $row = bind_int_return_row($sql2, $all['id']);
             $ref2 = $row[0];
 

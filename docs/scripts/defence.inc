@@ -49,7 +49,7 @@ $restricted = '';
 foreach ($vars as $key => $val) {
     ;
     if (in_array($key, $allowed))
-        ;//	$$key=myslashes($val);
+        $$key=($val);//	$$key=myslashes($val);
     else {
         $restricted .= ' $' . $key;
         unset($$key);

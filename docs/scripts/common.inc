@@ -165,7 +165,7 @@ function GetKats($kat_id, $ifstring)
     if (!$ifstring)
         return $kats;
     else {
-        $kats = '"' . implode('","', $kats) . '"';
+        $kats = implode(',', $kats);
         return $kats;
     }
 }
@@ -175,9 +175,8 @@ function CountPages($kat_id)
     global $mysqli;
     $kats = GetKats($kat_id, 1);
     $sql = 'select count(1) from `sources` where `parent` in(?)';
-
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param('s', $kats);
+    $stmt->bind_param('i', $kats);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_row();
@@ -190,7 +189,9 @@ function bind_int_return_row($sql, $var)
     global $mysqli;
 
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param('i', $var);
+    $r = $stmt->bind_param('i', $var);
+    if (!$r)
+        show_error($sql);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_row();

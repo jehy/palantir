@@ -12,7 +12,8 @@ $words = array('Windows NT', 'Windows 98', 'FreeBSD', 'MSIE 6', 'MSIE 5', 'MSIE 
 for ($i = 0; $i < sizeof($words); $i++) {
     $sql = 'select id from addition where ((site_id=?) and (useragent like(?)))';
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param('is', $site_id, '%' . $words[$i] . '%');
+    $word='%' . $words[$i] . '%';
+    $stmt->bind_param('is', $site_id, $word);
     $stmt->execute();
     $result = $stmt->get_result();
     $s[$i] = $result->num_rows;
@@ -53,5 +54,5 @@ while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $a = -$a;
     echo '<tr class="bg' . $back . '"><td>' . $row['useragent'] . '</td><td>' . $row['quantity'] . '</td></tr>';
 }
-mysql_free_result($result);
+#mysql_free_result($result);
 ?></table>

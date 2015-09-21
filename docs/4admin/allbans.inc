@@ -12,7 +12,7 @@ while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
         'name' => $row['name'],
         'url' => $row['url']);
 }
-mysql_free_result($result);
+#mysql_free_result($result);
 #print_R(array_keys($shows));
 #print_R($shows[3]);die();
 
@@ -22,7 +22,7 @@ $result = sql($sql);
 while ($row = $result->fetch_array(MYSQLI_ASSOC))
     if ($shows[$row['type']][$row['site_id']])
         $shows[$row['type']][$row['site_id']]['today_banner_shows'] = $row['today_banner_shows'];
-mysql_free_result($result);
+#mysql_free_result($result);
 
 
 ###selecting all banners, their data and today shows
@@ -33,7 +33,7 @@ while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     If ($shows[$row['type']][$row['site_id']])//if that site has shows and we wanna know about it
         $shows[$row['type']][$row['site_id']]['banners'][$row['id']] = array('ctr' => $row['ctr'], 'name' => $row['name'], 'shown' => $row['shown'], 'clicked' => $row['clicked'], 'today_shown' => $row['today_shown']);
 }
-mysql_free_result($result);
+#mysql_free_result($result);
 
 ###selecting all banner clicks
 $sql = 'SELECT  banners.type, banners.site_id,banners.id,COUNT(clicks.banner_id) AS today_clicks FROM clicks,banners WHERE ((clicks.date="' . date('d') . '")AND(banners.id=clicks.banner_id)AND(banners.status=1)) GROUP BY banners.id';
@@ -41,7 +41,7 @@ $result = sql($sql);
 while ($row = $result->fetch_array(MYSQLI_ASSOC))
     If ($shows[$row['type']][$row['site_id']])
         $shows[$row['type']][$row['site_id']]['banners'][$row['id']]['today_clicks'] = $row['today_clicks'];
-mysql_free_result($result);
+#mysql_free_result($result);
 
 ksort($shows);
 #print_R($shows[3]);die();

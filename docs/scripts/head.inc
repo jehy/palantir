@@ -81,10 +81,14 @@
             <div><img src="<?= COMMON_URL; ?>graphic/block_bottom.gif" alt=""></div>
 
             <span
-                class="smaller">Cайтов в каталоге:</span><? $row = mysql_fetch_row(sql("select count(*) from sources"));
+                class="smaller">Cайтов в каталоге:</span><?
+            $result = $mysqli->query("select count(*) from sources");
+            $row=$result->fetch_row();
             echo $row[0]; ?><br>
             <span
-                class="smaller">За сегодня показов банеров:</span>&nbsp;<? $row = mysql_fetch_row(sql("select count(*) from go"));
+                class="smaller">За сегодня показов банеров:</span>&nbsp;<?
+            $result = $mysqli->query("select count(*) from go");
+            $row=$result->fetch_row();
             echo $row[0]; ?>
 
             <br>
