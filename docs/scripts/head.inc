@@ -92,7 +92,7 @@
                 <div style="margin-top:10px;margin-bottom: 10px">
                     <a title="Каталог фэнтези сайтов Палантир" href='http://palantir.in/?from=2' target='_blank'>
                         <script type="text/javascript">
-                            Mz += "wh=" + screen.width + 'x' + screen.height;
+                            Mz = "wh=" + screen.width + 'x' + screen.height;
                             My = "<img src='http://palantir.in/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png";
                             My += "&cntc=none&rand=" + Math.random() + "&referer=" + encodeURIComponent(document.referrer);
                             My += '&pg=' + encodeURIComponent(window.location.href);

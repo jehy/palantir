@@ -17,7 +17,7 @@ function showCNT($t = 0, $img, $site_id)
     if ($t) {
         ?><a title="Каталог фэнтези сайтов Палантир" href='<?= COMMON_URL . '?from=' . $site_id; ?>' target='_blank'>
 <script type="text/javascript">
-Mz += "wh=" + screen.width + 'x' + screen.height;
+Mz = "wh=" + screen.width + 'x' + screen.height;
 My = "<img src='<?=$img;?>";
 My += "&amp;cntc=none&amp;rand=" + Math.random() + "&amp;referer=" + encodeURIComponent(document.referrer);
 My += '&amp;pg=' + encodeURIComponent(window.location.href);
