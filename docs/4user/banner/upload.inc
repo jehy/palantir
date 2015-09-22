@@ -1,9 +1,9 @@
 <?
 if ($step == 2) {
     $error = array();
-    $fimg_name = addslashes($_FILES['fimg']['name']);
-    $fimg_type = addslashes($_FILES['fimg']['type']);
-    $fimg_size = addslashes($_FILES['fimg']['size']);
+    $fimg_name = $_FILES['fimg']['name'];
+    $fimg_type = $_FILES['fimg']['type'];
+    $fimg_size = $_FILES['fimg']['size'];
     $s = getimagesize($_FILES['fimg']['tmp_name']);
     $s = explode('"', $s[3]);
     $fimg_width = $s[1];

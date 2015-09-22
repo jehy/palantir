@@ -98,7 +98,6 @@ function get_user_type()
         setcookie('cpassword', $cpassword, $ctime);
         $our_user_id = $row[0]; //echo"<b>!!".$our_user_id."</b>";
         $our_user = true; //echo"<h1>POSLE ".$row[last_login]."</h1>";
-        $session = addslashes($session);
         $sql = 'update users set last_login=? where id=? limit 1';
         $stmt = $mysqli->prepare($sql);
         $stmt->bind_param('ii', $time, $row[0]);

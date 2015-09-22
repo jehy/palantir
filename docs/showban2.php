@@ -4,7 +4,7 @@ Header('Expires: Mon, 26 Jul 2002 05:00:00 GMT');
 HEADER('Last-Modified: ' . gmdate('D, d M Y H:i:s') . 'GMT');
 HeAdEr('Cache-Control: no-cache, must-revalidate');
 hEaDeR('Pragma: no-cache');
-$url = addslashes(@$_GET['url']);
+$url = @$_GET['url'];
 if (!is_numeric($type = $_GET['type'])) exit;
 if (!is_numeric($from = $_GET['from'])) exit;
 if ((!is_numeric($rand = @$_GET['rand']) and ($rand))) exit;
