@@ -15,8 +15,7 @@ $img .= '&amp;cid=' . $cid;
 function showCNT($t = 0, $img, $site_id)
 {
     if ($t) {
-        ?>
-<a title="Каталог фэнтези сайтов Палантир" href='<?= COMMON_URL . '?from=' . $site_id; ?>' target='_blank'>
+        ?><a title="Каталог фэнтези сайтов Палантир" href='<?= COMMON_URL . '?from=' . $site_id; ?>' target='_blank'>
 <script type="text/javascript">
 Mz += "wh=" + screen.width + 'x' + screen.height;
 My = "<img src='<?=$img;?>";
