@@ -36,12 +36,12 @@ document.write(My);</script>
 
 ?>
 Новый код, с яваскрипт и полной статистикой:<br>
-<textarea readonly cols="80" rows="6">
+<textarea readonly cols="100" rows="6">
     <? showCNT(1, $img, $site_id); ?>
 </textarea>
 
-Старый вариант, без яваскрипта и без расширенной статистики:<br>
-<textarea readonly cols="80" rows="6">
+<br>Старый вариант, без яваскрипта и без расширенной статистики:<br>
+<textarea readonly cols="100" rows="6">
     <? showCNT(0, $img, $site_id); ?>
 </textarea>
 <br>На сайте это будет выглядеть так:<br><br>
