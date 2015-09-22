@@ -22,8 +22,8 @@ if (file_exists(MAPFILE))
 echo "\n Updating banner stats \n";
 ////drop those who have no active banners but have shows
 $sql = 'SELECT s.site_id FROM shows s LEFT JOIN banners b ON (s.site_id=b.site_id AND b.type=s.type AND b.status=1 )WHERE  b.id IS NULL';
-$result = $mysqli->execute($sql);
-while ($result->fetch_row()) {
+$result = $mysqli->query($sql);
+while ($row = $result->fetch_row()) {
     $sql = 'DELETE FROM `shows` WHERE site_id =' . $row[0];
     sql($sql);
 }
@@ -34,14 +34,14 @@ sql('update sources set ban_koef=0');
 #$sql='UPDATE sources s SET ban_koef=(SELECT  COUNT(DISTINCT ip)/COUNT(1) AS cnt FROM go WHERE site_id=s.id)';
 #$result=sql($sql);
 $sql = 'SELECT  from_site,COUNT(1)/COUNT(DISTINCT ip) AS cnt FROM go GROUP BY from_site';
-$result = $mysqli->execute($sql);
-while ($result->fetch_row())
+$result = $mysqli->query($sql);
+while ($row = $result->fetch_array(MYSQLI_ASSOC))
     sql('update sources set ban_koef=' . ceil($row['cnt']) . ' where id=' . $row['from_site']);
 
 #add if not enough
 $sql = 'SELECT COUNT(*) AS num,type FROM shows GROUP BY TYPE HAVING num <100';
-$result = $mysqli->execute($sql);
-while ($result->fetch_row()) {
+$result = $mysqli->query($sql);
+while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $num = $row['num'];
     while ($num < 101) {
         sql('insert into shows values(' . $Comission_Site_Id . ',' . $row['type'] . ')');
