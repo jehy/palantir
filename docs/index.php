@@ -104,7 +104,7 @@ if ($from) {
         $stmt->bind_param('iisi', $row['parent'], $row['today_hosts'], $row['name'], $row['today_hosts']);
         $stmt->execute();
         $result = $stmt->get_result();
-        $frompage = ceil($result->num_rows + 1) / TOP;
+        $frompage = ceil(($result->num_rows + 1) / TOP);
         if ($frompage == 0) $frompage = 1;
         $url = 'http://palantir.in/top/' . $row['name_eng'] . '/' . $frompage . '.html#' . $from;
         header("HTTP/1.1 301 Moved Permanently");
