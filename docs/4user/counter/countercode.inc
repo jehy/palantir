@@ -19,18 +19,12 @@ function showCNT($t = 0, $img, $site_id)
         ?>
     <a title="Каталог фэнтези сайтов Палантир" href='<?= COMMON_URL . '?from=' . $site_id; ?>' target='_blank'>
         <script type="text/javascript">
-            Md = document;
-            Mnv = navigator;
-            Mrn = Math.random();
-            Mn = (Mnv.appName.substring(0, 2) == "Mi") ? 0 : 1;
-            Mp = 0;
-            Mz = "p=" + Mp + "&amp";
-            Ms = screen;
-            Mz += "wh=" + Ms.width + 'x' + Ms.height;
+            Mz += "wh=" + screen.width + 'x' + screen.height;
             My = "<img src='<?=$img;?>";
-            My += "&amp;cntc=none&amp;rand=" + Mrn + "&amp;" + Mz + "&amp;referer=" + encodeURIComponent(Md.referrer) + '&amp;pg=' + encodeURIComponent(window.location.href);
+            My += "&amp;cntc=none&amp;rand=" + Math.random() + "&amp;referer=" + encodeURIComponent(document.referrer);
+            My += '&amp;pg=' + encodeURIComponent(window.location.href);
             My += "'  alt='Palantir' title='Каталог фэнтези сайтов Палантир' border='0' width='88px' height='31px'>";
-            Md.write(My);</script>
+            document.write(My);</script>
         <noscript><img src="<?= $img; ?>" alt='Palantir' title="Каталог фэнтези сайтов Палантир" border=0 width="88px"
                        height="31px"></noscript>
         </a><?
