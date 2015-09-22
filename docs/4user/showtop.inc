@@ -38,7 +38,7 @@ if ($s_num - $frompage > 11)
 
 if ($s_num - $frompage > 10)
     $showpages .= ' &nbsp;<a href="' . COMMON_URL . 'top/' . $katname . '/' . $s_num . '.html">' . $s_num . '</a>';
-$showpages = '<b>Страницы рейтинга:</b> ' . $showpages;
+$showpages = 'Страницы рейтинга: ' . $showpages;
 if (!$result->num_rows) {
     $srcblock = '<tr><td></td><td colspan="5" align="center"><span class="larger">Ресурсов в этом каталоге не зарегестрировано!</span></td></tr>';
 }
@@ -84,20 +84,20 @@ while ($all = $result->fetch_array(MYSQLI_ASSOC)) {
     $num++;
 }
 ?>
-<table class="tab_all" border="0" width="100%" align="center" cellpadding="0" cellspacing="0">
+<table class="tab_all" border="0" align="center" cellpadding="0" cellspacing="0">
 
     <tr>
         <td style="padding-left:20px;" colspan="5" align="center" id="KatName">Каталог "<?= $Kat_Name_Rus; ?>"</td>
     </tr>
     <tr>
-        <td style="padding-left:20px;" colspan="5" align="center"><?= $showpages; ?></td>
+        <td colspan="5" align="center" class="pages-navi"><?= $showpages; ?></td>
     </tr>
     <tr>
         <td style="padding-left:20px;" colspan="5"><br></td>
     </tr>
     <?= $srcblock; ?>
     <tr class="bgdark">
-        <td colspan="5" align="center"><?= $showpages; ?></td>
+        <td colspan="5" align="center" class="pages-navi"><?= $showpages; ?></td>
     </tr>
 </table>
 <script type="text/javascript">

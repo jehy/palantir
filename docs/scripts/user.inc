@@ -55,9 +55,12 @@ function get_user_type()
     $admin_user_id = '';
     $admin_user = false;
     $our_user = false;
-
-    if ($ac == 'login') {
-    } elseif ($ac == 'logout') {
+    if ($ac == 'login')
+    {
+        $clogin=$login;
+        $cpassword=$password;
+    }
+    elseif ($ac == 'logout') {
         $our_user_id = $admin_user_id = $our_user = $admin_user = $login = $password = $clogin = $cpassword = false;
         setcookie('clogin', '');
         setcookie('cpassword', '');
@@ -71,8 +74,8 @@ function get_user_type()
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows) {
-        $row = $result->fetch_array(MYSQLI_ASSOC);
-        $admin_user_id = $row['id'];
+        $row = $result->fetch_row();
+        $admin_user_id = $row[0];
         $admin_user = true;
         setcookie('clogin', $clogin); //only admin cookie expires after closing browser
         setcookie('cpassword', $cpassword);
@@ -88,7 +91,7 @@ function get_user_type()
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows) {
-        $row = $result->fetch_array(MYSQLI_ASSOC);
+        $row = $result->fetch_row();
 
         $ctime = time() + 60 * 60 * 24 * 30 * 12; //for an approximately year
         setcookie('clogin', $clogin, $ctime);

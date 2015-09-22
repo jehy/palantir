@@ -20,7 +20,7 @@
             </td>
         </tr>
     </table>
-    <table class="tab_all" border="0px" width="90%" align="center" cellpadding="4" cellspacing="4">
+    <table class="tab_all" border="0px" width="90%" align="center" cellpadding="4" cellspacing="4" style="margin-top: 40px">
         <?
         $news_to_show = 10;
         #echo"<tr><td align='center' >Архив новостей:";

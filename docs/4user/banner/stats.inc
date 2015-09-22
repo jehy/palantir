@@ -6,11 +6,11 @@
 $r = bind_int_return_row($sql, $site_id);
 $r = $r[0];
 echo '<strong>Накоплено ' . $r . ' показов в сети 88*31</strong>';
-$sql = 'select count(*) from shows where site_id="' . $site_id . '" and type=2';
+$sql = 'select count(*) from shows where site_id=? and type=2';
 $r = bind_int_return_row($sql, $site_id);
 $r = $r[0];
 echo '<br><strong>Накоплено ' . $r . ' показов в сети 100*100</strong>';
-$sql = 'select count(*) from shows where site_id="' . $site_id . '" and type=3';
+$sql = 'select count(*) from shows where site_id=? and type=3';
 $r = bind_int_return_row($sql, $site_id);
 $r = $r[0];
 echo '<br><strong>Накоплено ' . $r . ' показов в сети 468*60</strong>';?>

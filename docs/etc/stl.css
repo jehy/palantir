@@ -33,17 +33,62 @@ body {
     background-color: #1D1F29;
     color: #eeeeee;
     margin: 0;
+    line-height: 25px;
+}
+
+table, tr, td {
+    line-height: 1.3;
 }
 
 table.main {
     background-color: #33353F;
     height: 100%;
-    width: 950px;
+    width: 1200px;
 }
 
-.texture {
-    background-image: url('../graphic/block_texture.gif');
+img.logo {
+    margin-left: 38px;
+}
+
+table.tab_all {
+    max-width: 850px;
+    width: 100%;
+}
+
+table.tab_all td {
+    line-height: 1.5;
+}
+
+td.pages-navi {
+    font-size: 18px;
+    background-color: #3d3e46;
+    background-image: url("../graphic/dark.gif");
+    background-repeat: repeat-y;
+}
+
+table.tab_all td {
+    padding: 3px;
+}
+
+.navi {
+    background-image: url('../graphic/block_texture.png');
+    background-repeat: repeat-y;
     background-color: white;
+    width: 150px;
+    border: solid 1px;
+    border-radius: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    text-align: left;
+    padding-left: 30px;
+    line-height: 20px;
+    margin-top: 35px;
+    margin-left: 20px;
+}
+
+.navi-links {
+    text-align: center;
 }
 
 .bgtop {
@@ -52,15 +97,46 @@ table.main {
 }
 
 .menubg {
-    background-image: url('../graphic/menu_bg.gif');
+    background-image: url('../graphic/menu_bg.png');
+    background-repeat: repeat-y;
 }
 
 input.button {
     color: white;
-    width: 130px;
+    width: 150px;
+    height: 28px;
     background-image: url(../graphic/back.gif);
+    background-size: contain;
+    background-repeat: repeat-x;
     font-size: 12px;
 }
+
+table.user-menu {
+    background-color: #3D3E46;
+    width: 700px;
+}
+
+table.user-menu td {
+    background-color: #3D3E46;
+    width: 700px;
+    text-align: left;
+    padding-left: 300px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+}
+
+table.sites td {
+    padding-left: 30px;
+    padding-bottom: 5px;
+    padding-right: 3px;
+    padding-top: 3px;
+}
+
+table.your-sites {
+    width: 700px;
+}
+
 
 input.tab_all {
 
@@ -102,6 +178,7 @@ input.tab_all {
 span.larger2, span.larger {
     font-size: larger;
 }
-span.smaller{
-    font-size: smaller;
+
+span.smaller {
+    font-size: 13px;
 }

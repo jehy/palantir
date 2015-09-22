@@ -31,8 +31,7 @@
             language="javascript">document.write('<inp' + 'ut type="hid' + 'den" name="very_se' + 'cret_code" va' + 'lue="false">');</script>
         <input type="text" name="from1" value="Ваш е-мейл" class="input_text" style="width:396"><br>
         <input type="text" name="subject" value="Тема" class="input_text" style="width:396"><br>
-        <textarea wrap="virtual" name="text" class="input_text" rows="5" style="width:400">Текст
-            сообщения</textarea><br>
+        <textarea name="text" class="input_text" rows="5" style="width:400">Текст сообщения</textarea><br>
         <INPUT name="send" type="submit" value="Отправить" class="input_text" style="width:100">
         <INPUT type="reset" value="Очистить" class="input_text" style="width:100">
     </form><? } ?>

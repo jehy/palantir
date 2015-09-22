@@ -1,4 +1,4 @@
-<b style="color:black; margin-right: 63px;">Навигация:</b><br>
+<div style="color:#000; margin-right: 63px;font-weight:600;margin-bottom:10px;">Навигация:</div>
 <a class="bb" href="<?= COMMON_URL; ?>">Главная</a><br>
 <a class="bb" href="<?= COMMON_URL; ?>top/Fantasy.html"><b>Каталог</b></a><br>
 
@@ -26,7 +26,8 @@ $result = $stmt->get_result();
 if (!$result->num_rows)
     echo 'такого каталога нет!';
 else {
-    echo('<br><b style="color:black">Подкаталоги:</b><br>');
+    ?>
+    <div style="color:#000;font-weight:600;margin-bottom:10px;margin-top:10px;">Подкаталоги:</div><?
     $row = $result->fetch_row();
     $sql = 'select name_eng from `types` where id=?';
     $row = bind_int_return_row($sql, $row[0]);

@@ -53,93 +53,79 @@
     <meta name="Keywords" content="<?= $keywords1; ?>">
     <link rel="stylesheet" href="<?= COMMON_URL; ?>etc/stl.css" type="text/css">
     <script type="text/javascript" src="<?= COMMON_URL; ?>etc/top.js"></script>
-    <script type="text/javascript" src="<?= COMMON_URL; ?>etc/metric.js"></script>
 
 </head>
 <body>
 <table class="main" cellpadding="0" cellspacing="0" border="0" align="center">
     <tr>
-        <td height="102" valign="top" colspan="2"><a href="<?= COMMON_URL; ?>"><img width="415" height="102"
-                                                                                    alt="Палантир: каталог фентези, ролевых, аниме ресурсов. Банерная система."
-                                                                                    src="<?= COMMON_URL; ?>graphic/logo_small.gif"
-                                                                                    border=0></a><!-- put your fucken banner here <a href="/goto/party.photologia.ru"><img src="http://party.photologia.ru/images/info/ah.gif" border=0 style="padding-right:0px"></a>-->
+        <td class="menubg" height="102" valign="top" colspan="2"><a href="<?= COMMON_URL; ?>"><img class="logo"
+                                                                                                   alt="Палантир: каталог фентези, ролевых, аниме ресурсов. Банерная система."
+                                                                                                   src="<?= COMMON_URL; ?>graphic/logo_small.png"
+                                                                                                   border=0></a>
         </td>
         <td width="6" bgcolor="#3D3E46">&nbsp;</td>
     </tr>
     <tr>
-        <td valign="top" align="center" class="menubg" width="238">
+        <td valign="top" align="left" class="menubg" width="238">
 
 
-            <div style="width: 197px" class="bgtop">&nbsp;</div>
-            <div style="width: 197px;" class="texture">
-                <div style="width: 148px; text-align: left;">
-                    <?
-                    include('scripts/menu.inc');
-                    ?>
-                </div>
+            <div class="navi">
+                <?
+                include('scripts/menu.inc');
+                ?>
             </div>
-            <div><img src="<?= COMMON_URL; ?>graphic/block_bottom.gif" alt=""></div>
 
+            <div class="navi-links">
             <span
                 class="smaller">Cайтов в каталоге:</span><?
-            $result = $mysqli->query("select count(*) from sources");
-            $row=$result->fetch_row();
-            echo $row[0]; ?><br>
+                $result = $mysqli->query("select count(*) from sources");
+                $row = $result->fetch_row();
+                echo $row[0]; ?><br>
             <span
                 class="smaller">За сегодня показов банеров:</span>&nbsp;<?
-            $result = $mysqli->query("select count(*) from go");
-            $row=$result->fetch_row();
-            echo $row[0]; ?>
+                $result = $mysqli->query("select count(*) from go");
+                $row = $result->fetch_row();
+                echo $row[0]; ?>
 
-            <br>
+                <br>
 
-            <!-- Yandex.Metrika informer -->
-            <!--<a href="https://metrika.yandex.ru/stat/?id=24112042&amp;from=informer"
-            target="_blank" rel="nofollow"><img src="//bs.yandex.ru/informer/24112042/3_0_000080FF_000080FF_1_pageviews"
-            style="width:88px; height:31px; border:0;" alt="Яндекс.Метрика" title="Яндекс.Метрика: данные за сегодня (просмотры, визиты и уникальные посетители)" onclick="try{Ya.Metrika.informer({i:this,id:24112042,lang:'ru'});return false}catch(e){}"/></a>
-            -->
-            <!-- /Yandex.Metrika informer -->
-            <noscript>
-                <div><img src="//mc.yandex.ru/watch/24112042" style="position:absolute; left:-9999px;" alt=""/></div>
-            </noscript>
-            <!-- /Yandex.Metrika counter -->
+                <div style="margin-top:10px;margin-bottom: 10px">
+                    <script type="text/javascript">
+                        Md = document;
+                        Mnv = navigator;
+                        Mrn = Math.random();
+                        Mn = (Mnv.appName.substring(0, 2) == "Mi") ? 0 : 1;
+                        Mp = 0;
+                        Mz = "p=" + Mp + "&";
+                        Ms = screen;
+                        Mz += "wh=" + Ms.width + 'x' + Ms.height;
+                        My = "<img src='http://palantir.in/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png";
+                        My += "&cntc=none&rand=" + Mrn + "&" + Mz + "&referer=" + escape(Md.referrer) + '&pg=' + escape(window.location.href);
+                        My += "'  alt='Palantir' title='Хотите такой счётчик? Регистрируйтесь в рейтинге Палантир' border='0' width='88px' height='31px'>";
+                        Md.write(My);</script>
+                    <noscript><img
+                            src="http://palantir.in/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png"
+                            alt='Palantir' title="Хотите такой счётчик? Регистрируйтесь в рейтинге Палантир" border=0
+                            width="88px" height="31px"></noscript>
+                </div>
 
+                <img border=0 src="<?= COMMON_URL; ?>graphic/copyright.gif" alt="&copy;"></a><br>
 
-            <script type="text/javascript">
-                Md = document;
-                Mnv = navigator;
-                Mrn = Math.random();
-                Mn = (Mnv.appName.substring(0, 2) == "Mi") ? 0 : 1;
-                Mp = 0;
-                Mz = "p=" + Mp + "&";
-                Ms = screen;
-                Mz += "wh=" + Ms.width + 'x' + Ms.height;
-                My = "<img src='http://palantir.in/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png";
-                My += "&cntc=none&rand=" + Mrn + "&" + Mz + "&referer=" + escape(Md.referrer) + '&pg=' + escape(window.location.href);
-                My += "'  alt='Palantir' title='Хотите такой счётчик? Регистрируйтесь в рейтинге Палантир' border='0' width='88px' height='31px'>";
-                Md.write(My);</script>
-            <noscript><img
-                    src="http://palantir.in/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png"
-                    alt='Palantir' title="Хотите такой счётчик? Регистрируйтесь в рейтинге Палантир" border=0
-                    width="88px" height="31px"></noscript>
-            <br>
+                <?
+                if (!defined('_SAPE_USER')) {
+                    define('_SAPE_USER', '2679d8db6fb58eb88c77b607fa55e7ac');
+                }
+                require_once(_SAPE_USER . '/sape.php');
 
-            <img border=0 src="<?= COMMON_URL; ?>graphic/copyright.gif" alt="&copy;"></a><br>
+                $uri = $_SERVER['REQUEST_URI'];
+                $opt = array();
+                $opt['request_uri'] = $uri;
+                $opt['charset'] = 'UTF-8';
 
-            <?
-            if (!defined('_SAPE_USER')) {
-                define('_SAPE_USER', '2679d8db6fb58eb88c77b607fa55e7ac');
-            }
-            require_once(_SAPE_USER . '/sape.php');
-
-            $uri = $_SERVER['REQUEST_URI'];
-            $opt = array();
-            $opt['request_uri'] = $uri;
-            $opt['charset'] = 'UTF-8';
-
-            $sape = new SAPE_client($opt);
-            $x = $sape->return_links();
-            if ($x) echo 'Спонсоры каталога:<li>' . $x . '</li>';
-            ?>
+                $sape = new SAPE_client($opt);
+                $x = $sape->return_links();
+                if ($x) echo 'Спонсоры каталога:<li>' . $x . '</li>';
+                ?>
+            </div>
         </td>
-        <td width=712 valign=top>
+        <td width=800 valign=top>
