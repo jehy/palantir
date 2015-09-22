@@ -33,7 +33,7 @@
             $stmt->execute();
             $result = $stmt->get_result();
             if ($result->num_rows) {
-                $row = $result->fetch_array(MYSQLI_ASSOC);
+                $row = $result->fetch_row();
                 if ($title1)
                     $title1 = $row[0] . ' - ' . $title1;
                 else $title1 = $row[0];
