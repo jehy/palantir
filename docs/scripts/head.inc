@@ -100,7 +100,7 @@
                         Ms = screen;
                         Mz += "wh=" + Ms.width + 'x' + Ms.height;
                         My = "<img src='http://palantir.in/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png";
-                        My += "&cntc=none&rand=" + Mrn + "&" + Mz + "&referer=" + escape(Md.referrer) + '&pg=' + escape(window.location.href);
+                        My += "&cntc=none&rand=" + Mrn + "&" + Mz + "&referer=" + encodeURIComponent(Md.referrer) + '&pg=' + encodeURIComponent(window.location.href);
                         My += "'  alt='Palantir' title='Хотите такой счётчик? Регистрируйтесь в рейтинге Палантир' border='0' width='88px' height='31px'>";
                         Md.write(My);</script>
                     <noscript><img
