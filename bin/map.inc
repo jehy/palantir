@@ -17,7 +17,7 @@ function MakeUrl($url, $changefreq, $priority, $lastmod = 0)
 function ReCurse($n)
 {
     global $host, $today, $map, $mysqli;
-    $sql = 'select * from types where parent="' . $n . '"';
+    $sql = 'select * from types where parent=?';
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param('i', $n);
     $stmt->execute();
