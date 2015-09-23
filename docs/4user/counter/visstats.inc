@@ -11,6 +11,7 @@ $sql = "SELECT OS, COUNT(OS) AS freq FROM
    WHEN useragent LIKE '%Android%' THEN 'Android'
    WHEN useragent LIKE '%Mac OS X%' THEN 'OS X'
    WHEN useragent LIKE '%X11%' THEN 'Linux'
+   WHEN useragent LIKE '%Linux%' THEN 'Linux'
    WHEN useragent LIKE '%Windows NT 10.%' THEN 'Windows 10'
    WHEN useragent LIKE '%Windows NT 6.3%' THEN 'Windows 8.1'
    WHEN useragent LIKE '%Windows NT 6.2%' THEN 'Windows 8'
