@@ -1,58 +1,113 @@
 Сведения о браузерах посетителей сайта "<strong><?= GetName($site_id); ?>
 </strong>":<br>
 <?
-function getmicrotime()
-{
-    list($usec, $sec) = explode(" ", microtime());
-    return ((float)$usec + (float)$sec);
-}
 
-$t = getmicrotime();
-$words = array('Windows NT', 'Windows 98', 'FreeBSD', 'MSIE 6', 'MSIE 5', 'MSIE 4', 'Opera', 'Firefox', 'MSIE 7', 'Safari', 'Chrome', 'Macintosh', 'Linux');
-for ($i = 0; $i < sizeof($words); $i++) {
-    $sql = 'select id from addition where ((site_id=?) and (useragent like(?)))';
-    $stmt = $mysqli->prepare($sql);
-    $word='%' . $words[$i] . '%';
-    $stmt->bind_param('is', $site_id, $word);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $s[$i] = $result->num_rows;
-}
-//echo (getmicrotime()-$t).'<br>';
-echo '
-Кратко:<br><table cellpadding="0" cellspacing="0" border="1px" width="200">
-<tr><td colspan="2">Операционные системы:</td></tr>
-<tr><td>Windows NT </td><td>' . $s[0] . '</td></tr>
-<tr><td>Windows 98 </td><td> ' . $s[1] . '</td></tr>
-<tr><td>FreeBSD </td><td>' . $s[2] . '</td></tr>
-<tr><td>Macintosh  </td><td>' . $s[11] . '</td></tr>
-<tr><td>Linux  </td><td>' . $s[12] . '</td></tr>
-</table><BR><table cellpadding="0" cellspacing="0" border="1px" width="200">
-<tr><td colspan="2">Браузеры:</td></tr>
-<tr><td>Internet Explorer 7  </td><td>' . $s[8] . '</td></tr>
-<tr><td>Internet Explorer 6 </td><td>' . $s[3] . '</td></tr>
-<tr><td>Internet Explorer 5  </td><td>' . $s[4] . '</td></tr>
-<tr><td>Internet Explorer 4  </td><td>' . $s[5] . '</td></tr>
-<tr><td>Opera  </td><td>' . $s[6] . '</td></tr>
-<tr><td>Firefox  </td><td>' . $s[7] . '</td></tr>
-<tr><td>Safari  </td><td>' . $s[9] . '</td></tr>
-<tr><td>Chrome  </td><td>' . $s[10] . '</td></tr>
-</table>
-* Некоторые браузеры могут считаться дважды, если у них проставлена настройка "Распознаваться как IE".
-<br><br><br>
-Подробная статистика:
-<table><tr><td>Тип браузера:</td><td>Кол-во посещений:</td><td></td></tr>';
-$a = 1;
-$sql = 'select count(*) as quantity,useragent from addition where site_id=? group by useragent order by quantity desc,useragent';
+
+$sql = "SELECT OS, COUNT(OS) AS freq FROM
+(SELECT
+ CASE
+   WHEN useragent LIKE '%iPad%' THEN 'iPad'
+   WHEN useragent LIKE '%iPhone%' THEN 'iPhone'
+   WHEN useragent LIKE '%Android%' THEN 'Android'
+   WHEN useragent LIKE '%Mac OS X%' THEN 'OS X'
+   WHEN useragent LIKE '%X11%' THEN 'Linux'
+   WHEN useragent LIKE '%Windows NT 10.%' THEN 'Windows 10'
+   WHEN useragent LIKE '%Windows NT 6.3%' THEN 'Windows 8.1'
+   WHEN useragent LIKE '%Windows NT 6.2%' THEN 'Windows 8'
+   WHEN useragent LIKE '%Windows NT 6.1%' THEN 'Windows 7'
+   WHEN useragent LIKE '%Windows NT 6.0%' THEN 'Windows Vista'
+   WHEN useragent LIKE '%Windows NT 5.2%' THEN 'Windows Server 2003; Windows XP x64 Edition'
+   WHEN useragent LIKE '%Windows NT 5.1%' THEN 'Windows XP'
+   WHEN useragent LIKE '%Windows NT 5.0%' THEN 'Windows 2000'
+   WHEN useragent LIKE '%Windows NT 4.0%' THEN 'Microsoft Windows NT 4.0'
+   WHEN useragent LIKE '%Windows 9' THEN 'Windows 95/98/Millenium'
+   WHEN useragent LIKE '%Windows CE' THEN 'Windows CE'
+   ELSE 'Other'
+ END OS
+ FROM addition where site_id=?) AS osses
+GROUP BY OS
+ORDER BY freq DESC";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param('i', $site_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$oses = $browsers = array();
+while ($row = $result->fetch_array(MYSQLI_ASSOC))
+    $oses[$row['OS']] = $row['freq'];
+
+
+$sql = "SELECT browser, COUNT(browser) AS freq FROM
+(SELECT
+CASE
+   WHEN useragent LIKE '%Chrome%' THEN 'Chrome'
+   WHEN useragent LIKE '%Opera%' THEN 'Opera'
+   WHEN useragent LIKE '%Safari%' THEN 'Safari'
+   WHEN useragent LIKE '%Firefox%' THEN 'Firefox'
+   WHEN useragent LIKE '%MSIE 7%' THEN 'IE7'
+   WHEN useragent LIKE '%MSIE 8%' THEN 'IE8'
+   WHEN useragent LIKE '%MSIE 9%' THEN 'IE9'
+   WHEN useragent LIKE '%MSIE 10%' THEN 'IE10'
+   WHEN useragent LIKE '%rv:11%' THEN 'IE11'
+   ELSE 'Other'
+  END browser
+  FROM addition where site_id=?) AS browsers
+GROUP BY browser
+ORDER BY freq DESC";
 
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param('i', $site_id);
 $stmt->execute();
 $result = $stmt->get_result();
-while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+while ($row = $result->fetch_array(MYSQLI_ASSOC))
+    $browsers[$row['browser']] = $row['freq'];
+
+
+?>
+Кратко:<br>
+<table cellpadding="0" cellspacing="0" border="1px" width="200">
+    <tr>
+        <td colspan="2">Операционные системы:</td>
+    </tr><?
+    foreach ($oses as $name => $freq)
+        echo '<tr><td>' . $name . '</td><td>' . $freq . '</td></tr>';
+    ?>
+</table><BR>
+<table cellpadding="0" cellspacing="0" border="1px" width="200">
+    <tr>
+        <td colspan="2">Браузеры:</td>
+    </tr><?
+    foreach ($browsers as $name => $freq)
+        echo '<tr><td>' . $name . '</td><td>' . $freq . '</td></tr>';
+    ?>
+</table>
+
+<br><br><br>
+Подробная статистика:
+<table>
+    <tr>
+        <td>Тип браузера:</td>
+        <td>Кол-во посещений:</td>
+        <td></td>
+    </tr>
+    <?
+    $a = 1;
+    $sql = 'select count(*) as quantity,useragent from addition where site_id=? group by useragent order by quantity
+    desc,useragent';
+
+    $stmt = $mysqli->prepare($sql);
+    $stmt->bind_param('i', $site_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     if ($a == 1) $back = 'dark'; else $back = 'white';
     $a = -$a;
-    echo '<tr class="bg' . $back . '"><td>' . $row['useragent'] . '</td><td>' . $row['quantity'] . '</td></tr>';
-}
-#mysql_free_result($result);
-?></table>
+    echo '
+    <tr class="bg' . $back . '">
+        <td>' . $row['useragent'] . '</td>
+        <td>' . $row['quantity'] . '</td>
+    </tr>
+    ';
+    }
+    #mysql_free_result($result);
+    ?>
+</table>
