@@ -138,7 +138,9 @@ function reguser2()
         $sql = 'select 1 from `check` where ((`ip`=?)and(time>?) and (rand=?)) limit 1';
 
         $stmt = $mysqli->prepare($sql);
-        $stmt->bind_param('sis', ip2long($_SERVER['REMOTE_ADDR']), (time() - 60 * 15), $reg['if_hacker']);
+        $time=(time() - 60 * 15);
+        $ip=ip2long($_SERVER['REMOTE_ADDR']);
+        $stmt->bind_param('sis', $ip, $time, $reg['if_hacker']);
         $stmt->execute();
         $result = $stmt->get_result();
         if (!$result->num_rows) $error[] = 'введённое число не совпадает со сгенерированным!';
@@ -174,7 +176,7 @@ function reguser2()
         $sql = 'DELETE from `check` where `ip`=?';
 
         $stmt = $mysqli->prepare($sql);
-        $stmt->bind_param('s', ip2long($_SERVER['REMOTE_ADDR']));
+        $stmt->bind_param('s', $ip);
         $stmt->execute();
 
         $sql = 'INSERT INTO `users` VALUES  ("", ?,?, ?, ?,0,0)';
@@ -209,7 +211,9 @@ function regsite3()
     $sql = 'select 1 from `check` where ((`ip`=?)and(time>?) and (rand=?)) limit 1';
 
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param('sis', ip2long($_SERVER['REMOTE_ADDR']), (time() - 60 * 15), $reg['if_hacker']);
+    $ip=ip2long($_SERVER['REMOTE_ADDR']);
+    $time=(time() - 60 * 15);
+    $stmt->bind_param('sis', $ip, $time, $reg['if_hacker']);
     $stmt->execute();
     $result = $stmt->get_result();
     if (!$result->num_rows)
