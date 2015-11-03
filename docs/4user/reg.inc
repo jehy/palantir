@@ -12,7 +12,7 @@ function showlev2($n)
     $result = $stmt->get_result();
     echo '<ul>';
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $sql = 'select * from types where parent="?';
+        $sql = 'select * from types where parent=?';
         $stmt = $mysqli->prepare($sql);
         $stmt->bind_param('i', $row['id']);
         $stmt->execute();
