@@ -16,8 +16,8 @@ function showlev2($n)
         $stmt = $mysqli->prepare($sql);
         $stmt->bind_param('i', $row['id']);
         $stmt->execute();
-        $result = $stmt->get_result();
-        if (!$result->num_rows)
+        $result2 = $stmt->get_result();
+        if (!$result2->num_rows)
             echo '<a href="index.php?page=reg&ac=addsite&step=2&sid=' . $row['id'] . '">' . $row['name'] . '</a><br>';
         else
             echo $row['name'] . '<br>';
