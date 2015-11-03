@@ -4,7 +4,7 @@
 function showlev2($n)
 {
     global $mysqli;
-    $sql = 'select * from types where parent="?"';
+    $sql = 'select * from types where parent=?';
 
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param('i', $n);
