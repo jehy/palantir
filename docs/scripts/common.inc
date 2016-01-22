@@ -82,7 +82,7 @@ function f_connect()
 
 
 DEFINE(TOP, 30);
-DEFINE(COMMON_URL, 'http://palantir.in/');
+DEFINE(COMMON_URL, 'https://palantir.in/');
 $max_banner_size = 20;
 $news_to_show = 3;
 $show_news_on_other_pages = 8;

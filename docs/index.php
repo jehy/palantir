@@ -106,7 +106,7 @@ if ($from) {
         $result = $stmt->get_result();
         $frompage = ceil(($result->num_rows + 1) / TOP);
         if ($frompage == 0) $frompage = 1;
-        $url = 'http://palantir.in/top/' . $row['name_eng'] . '/' . $frompage . '.html#' . $from;
+        $url = 'https://palantir.in/top/' . $row['name_eng'] . '/' . $frompage . '.html#' . $from;
         header("HTTP/1.1 301 Moved Permanently");
         header('Location: ' . $url);
         die('<html><head><META http-equiv="refresh" content="0; URL=' . $url . '"></head><body></body></html>');
@@ -127,7 +127,7 @@ if ($katid) //old system link
 
         $row = $result->fetch_array(MYSQLI_ASSOC);
         $katname = $row[0];
-        $url = 'http://palantir.in/top/' . $katname;
+        $url = 'https://palantir.in/top/' . $katname;
         if ($frompage) $url .= '/' . $frompage;
         $url .= '.html';
         header("HTTP/1.1 301 Moved Permanently");
@@ -166,7 +166,7 @@ if ($katname) {
         $row = $result->fetch_array(MYSQLI_ASSOC);
         $katid = $row['id'];
     } else {
-        header('Location: http://Palantir.in');
+        header('Location: https://Palantir.in');
         header('HTTP/1.0 404 Not Found');
         header("Status: 404 Not Found");
         die('<html><head><META http-equiv="refresh" content="0; URL=' . COMMON_URL . '404.html"></head><body></body></html>');
@@ -192,7 +192,7 @@ if (!$page && $_SERVER['REQUEST_URI'] == '/') $page = 'index';
 if (in_array($page, $pages)) {
     include('scripts/no_cache.inc');
 } else {
-    header('Location: http://Palantir.in');
+    header('Location: https://Palantir.in');
     header('HTTP/1.0 404 Not Found');
     header("Status: 404 Not Found");
     die('<html><head><META http-equiv="refresh" content="0; URL=' . COMMON_URL . '404.html"></head><body></body></html>');

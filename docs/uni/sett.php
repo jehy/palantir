@@ -1,4 +1,4 @@
 <?
-$main_mirror='http://palantir.in/';
-$main_mirror_uni='http://palantir.in/uni/';
+$main_mirror='https://palantir.in/';
+$main_mirror_uni='https://palantir.in/uni/';
 ?>
