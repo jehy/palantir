@@ -90,15 +90,15 @@
                 <br>
 
                 <div style="margin-top:10px;margin-bottom: 10px">
-                    <a title="Каталог фэнтези сайтов Палантир" href='http://palantir.in/?from=2' target='_blank'>
+                    <a title="Каталог фэнтези сайтов Палантир" href='https://palantir.in/?from=2' target='_blank'>
                         <script type="text/javascript">
                             Mz = "wh=" + screen.width + 'x' + screen.height;
-                            My = "<img src='http://palantir.in/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png";
+                            My = "<img src='https://palantir.in/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png";
                             My += "&cntc=none&rand=" + Math.random() + "&referer=" + encodeURIComponent(document.referrer);
                             My += '&pg=' + encodeURIComponent(window.location.href);
                             My += "'  alt='Palantir' title='Каталог фэнтези сайтов Палантир' border='0' width='88px' height='31px'>";
                             document.write(My);</script>
-                        <noscript><img src="http://palantir.in/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png" alt='Palantir' title="Каталог фэнтези сайтов Палантир" border=0 width="88px"
+                        <noscript><img src="https://palantir.in/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png" alt='Palantir' title="Каталог фэнтези сайтов Палантир" border=0 width="88px"
                                        height="31px"></noscript>
                     </a>
                 </div>
