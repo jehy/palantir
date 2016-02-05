@@ -13,7 +13,8 @@ if ($mysqli->affected_rows == 0) {
     $sql = 'insert into `check` values(?,?,?)';
 
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param('isi', $ip, $random, time());
+    $t=time();
+    $stmt->bind_param('isi', $ip, $random, $t);
     $stmt->execute();
 }
 $im = imageCreate(55, 15);
