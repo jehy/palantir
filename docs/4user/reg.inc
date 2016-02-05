@@ -229,7 +229,7 @@ function regsite3()
     if ($result->num_rows)
         $error[] = 'В этом каталоге нельзя регистрироваться! Спуститесь ниже по ветке!';
 
-    $sql = 'select 1 from types where id="' . $sid . '" limit 1';
+    $sql = 'select 1 from types where id=? limit 1';
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param('i', $sid);
     $stmt->execute();
