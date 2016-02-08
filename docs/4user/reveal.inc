@@ -13,7 +13,8 @@ function increment_queries($site_id)
         $sql = 'INSERT INTO `queries` VALUES(?,?,1,?)';
 
         $stmt = $mysqli->prepare($sql);
-        $stmt->bind_param('sii', date("Y:m:d"), $site_id, $ip);
+        $dt=date("Y:m:d");
+        $stmt->bind_param('sii', $dt, $site_id, $ip);
         $stmt->execute();
     }
     #echo $sql.mysql_error();
@@ -25,7 +26,8 @@ function get_queries($site_id)
     $sql = 'select SUM(`quantity`) from queries where ((site_id=?) and (`date`=?))';
 
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param('is', $site_id, date("Y:m:d"));
+    $dt=date("Y:m:d");
+    $stmt->bind_param('is', $site_id, $dt);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows) {

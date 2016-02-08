@@ -240,7 +240,8 @@ function regsite3()
     if (!$error) {
         $sql = 'DELETE from `check` where `ip`=?';
         $stmt = $mysqli->prepare($sql);
-        $stmt->bind_param('i', ip2long($_SERVER['REMOTE_ADDR']));
+        $ip=ip2long($_SERVER['REMOTE_ADDR']);
+        $stmt->bind_param('i', $ip);
         $stmt->execute();
 
         $sql = 'INSERT INTO sources VALUES
