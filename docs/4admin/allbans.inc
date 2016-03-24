@@ -6,7 +6,7 @@ $sql = 'SELECT shows.type as stype,shows.site_id as s_site_id,sources.url, sourc
 $result = sql($sql);
 while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
     if (!$row['site_id'])
-        echo 'О-оу. Есть показы банеров без сайта... Идентификатор - ' . $row['s_site_id'];
+        echo 'О-оу. Есть показы баннеров без сайта... Идентификатор - ' . $row['s_site_id'];
     $shows[$row['stype']][$row['site_id']] = array('current_shows' => $row['curr_shows'],
         'ban_koef' => $row['ban_koef'],
         'name' => $row['name'],
@@ -66,7 +66,7 @@ foreach ($shows as $network_id => $arr) #for($i=1;$i<=$networks;$i++)
                 if (!$banner['today_clicks']) $banner['today_clicks'] = '0';
                 echo '<tr class="bg' . $back . '"><td colspan="4">
   <table cellpadding="0" cellspacing="0" class="bg' . $back . '" border="0" width="100%">
-  <tr><td>Название банера</td><td>Показов сегодня</td><td>Всего</td><td>Кликов сегодня</td><td>Всего</td><td>CTR%</td></tr>
+  <tr><td>Название баннера</td><td>Показов сегодня</td><td>Всего</td><td>Кликов сегодня</td><td>Всего</td><td>CTR%</td></tr>
   <tr>
   <td>' . $banner['name'] . '</td>
   <td>' . $banner['today_shown'] . '</td><td>' . $banner['shown'] . '</td>
@@ -76,7 +76,7 @@ foreach ($shows as $network_id => $arr) #for($i=1;$i<=$networks;$i++)
   </td></tr>';
             }
         } else {
-            echo '<tr class="bg' . $back . '"><td colspan="4">Нет банеров, или остались показы у удалённого сайта!</td></tr>';
+            echo '<tr class="bg' . $back . '"><td colspan="4">Нет баннеров, или остались показы у удалённого сайта!</td></tr>';
         }
         echo '<tr class="bgwhite"><td colspan="3"><br><br><br></td></tr>';
     }

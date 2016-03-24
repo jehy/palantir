@@ -1,5 +1,5 @@
 <a href='index.php??page=user'>Вернуться в систему администрирования</a><br>
-<a href="index.php?page=banner">В систему управления банерами</a><br>
+<a href="index.php?page=banner">В систему управления баннерами</a><br>
 <?
 $sql = "select sources.name from users,sources where ((login=?)&&(password=?)) and sources.id=?";
 

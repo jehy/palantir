@@ -40,12 +40,12 @@
             }
         }
         if (!$title1)
-            $title1 = 'Палантир - каталог фэнтези сайтов с банерной системой';
+            $title1 = 'Палантир - каталог фэнтези сайтов с баннерной системой';
         else $title1 = 'Палантир - ' . $title1;
         if (!$description1)
-            $description1 = 'Палантир - каталог фэнтези сайтов, ролевая банерная система';
+            $description1 = 'Палантир - каталог фэнтези сайтов, ролевая баннерная система';
         if (!$keywords1)
-            $keywords1 = 'фэнтези каталог,банерная система,Palantir,fantasy,tolkien,top,list,site,source,resource,палантир,каталог,фэнтези,ресурсы,сайты';
+            $keywords1 = 'фэнтези каталог,баннерная система,Palantir,fantasy,tolkien,top,list,site,source,resource,палантир,каталог,фэнтези,ресурсы,сайты';
     }
     ?>
     <title><?= $title1; ?></title>
@@ -82,7 +82,7 @@
                 $row = $result->fetch_row();
                 echo $row[0]; ?><br>
             <span
-                class="smaller">За сегодня показов банеров:</span>&nbsp;<?
+                class="smaller">За сегодня показов баннеров:</span>&nbsp;<?
                 $result = $mysqli->query("select count(*) from go");
                 $row = $result->fetch_row();
                 echo $row[0]; ?>

@@ -1,5 +1,5 @@
 <a href='?page=user'>Вернуться в систему администрирования</a><br>
-<a href="index.php?page=banner&site_id=<?= $site_id; ?>&ac=view">В систему управления банерами</a><br>
+<a href="index.php?page=banner&site_id=<?= $site_id; ?>&ac=view">В систему управления баннерами</a><br>
 <table border="1" cellpadding="0" cellspacing="0">
     <tr>
         <td>URL</td>

@@ -29,7 +29,7 @@ $result = $stmt->get_result();
 
 echo mysql_error();
 if (!$result->num_rows) {
-    echo '<h1>Сначала уж загрузи банер, а потом на него смотри!</h1>';
+    echo '<h1>Сначала уж загрузи баннер, а потом на него смотри!</h1>';
 } else {
     $banners = array();
     echo '<table border="0" cellpadding="0" cellspacing="0" width="600">';
@@ -52,7 +52,7 @@ if (!$result->num_rows) {
 <input type="hidden" name="site_id" value="' . $site_id . '">
 <select name="status">';
         if ($val['status'] != 2) echo '<option value="2">Отключить баннер</option>';
-        if ($val['status'] != 1) echo '<option value="1">Включить банер</option>';
+        if ($val['status'] != 1) echo '<option value="1">Включить баннер</option>';
         echo '<option value="0">Удалить баннер</option>
 </select>
 <input type="hidden" name="ban_id" value=' . $key . '><input type="hidden" name="site_id" value="' . $site_id . '">
@@ -71,7 +71,7 @@ if (!$result->num_rows) {
             $ctr = round($val['clicked'] / $val['shown'], 3);
         echo '<tr><td colspan="4" class="bg' . $back . '">
   <table cellpadding="0" cellspacing="0" class="bg' . $back . '" border="1" width="100%">
-  <tr><td>Название банера</td><td>Показов сегодня</td><td>Всего</td><td>Кликов сегодня</td><td>Всего</td><td>CTR%</td></tr>
+  <tr><td>Название баннера</td><td>Показов сегодня</td><td>Всего</td><td>Кликов сегодня</td><td>Всего</td><td>CTR%</td></tr>
   <tr>
   <td>' . $val['name'] . '</td>
   <td>' . $val['today_views'] . '</td><td>' . $val['shown'] . '</td>

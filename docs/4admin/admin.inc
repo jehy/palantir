@@ -77,7 +77,7 @@ if ($admin_user) {
             </tr>
             <tr>
                 <td colspan="2">Функции для глупых пользователей:<br>
-                    <a href="<?= COMMON_URL; ?>index.php?page=46">Загрузка пользовательского банера</a>
+                    <a href="<?= COMMON_URL; ?>index.php?page=46">Загрузка пользовательского баннера</a>
                 </td>
             </tr>
         </table>

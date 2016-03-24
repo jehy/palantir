@@ -19,7 +19,7 @@ if ($step == 2) {
     elseif (($fimg_width > $network[$size]['width'] + 10) || ($fimg_width < $network[$size]['width'] - 10)
         || ($fimg_height > $network[$size]['height'] + 10) || ($fimg_height < $network[$size]['height'] - 10)
     )
-        $error[] = 'Слишком большое отклонение размера банера!<br>' . $fimg_width . '*' . $fimg_height . ' вместо ' . $network[$size]['width'] . '*' . $network[$size]['height'] . '!<br>';
+        $error[] = 'Слишком большое отклонение размера баннера!<br>' . $fimg_width . '*' . $fimg_height . ' вместо ' . $network[$size]['width'] . '*' . $network[$size]['height'] . '!<br>';
     if ((($fimg_size > (1024 * 20)) && ($size == 1)) ||
         (($fimg_size > (1024 * 30)) && ($size == 2)) ||
         (($fimg_size > (1024 * 40)) && ($size == 3))
@@ -36,7 +36,7 @@ if ($step == 2) {
             $NewName = 'uni/banners/imgs/img_' . $bid . '.' . $fimg_type;
             if (!copy($_FILES['fimg']['tmp_name'], $NewName)) {
                 echo 'Непредвиденная файловая ошибка!! Сообщите администраторам!';
-                error_addlog('Не получилось скопировать банер ' . $bid . '.' . $fimg_type);
+                error_addlog('Не получилось скопировать баннер ' . $bid . '.' . $fimg_type);
             } else {
                 ?>
                 Баннер закачан успешно:<br>
@@ -54,9 +54,9 @@ if ($step == 2) {
     Для 88*31 - 20 кб;<br>
     Для 100*100 - 30 кб;<br>
     Для 468*60 - 40 кб;<br>
-    <strong><span class="larger">Внимание!</span> Закачивайте баннер того стандарта, банер которого вы поставите у себя на
-        сайте (если вы загрузили несколько типов банеров, то и код надо ставить для именно этих типов). Имеется в виду,
-        что если вы закачали банер размера 88*31 и 468*60, то ставьте код для банера 88*31 и 468*60 и никакой другой,
+    <strong><span class="larger">Внимание!</span> Закачивайте баннер того стандарта, баннер которого вы поставите у себя на
+        сайте (если вы загрузили несколько типов баннеров, то и код надо ставить для именно этих типов). Имеется в виду,
+        что если вы закачали баннер размера 88*31 и 468*60, то ставьте код для баннера 88*31 и 468*60 и никакой другой,
         например.</strong><br>
     <form action='index.php' method='post' enctype='multipart/form-data'>
         <table border='0'>

@@ -77,7 +77,7 @@
   Cтатистика по счётчику</a></td>
   <td bgcolor="#6D3E46"' . $javasc . ' href="' . COMMON_URL . 'index.php?page=banner&ac=code&site_id=' . $row2['id'] . '">Получить код баннера</a></td></tr>
 <tr><td>&nbsp;</td><td>&nbsp;</td><td  bgcolor="#6D3E46" ' . $javasc . ' href="' . COMMON_URL . 'index.php?page=banner&ac=view&site_id=' . $row2['id'] . '">
-Управление банерами</a></td></tr>
+Управление баннерами</a></td></tr>
 </table></td></tr>
 <tr><td width="100%">&nbsp;</td></tr>
   ');
