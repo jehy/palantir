@@ -117,7 +117,7 @@ if ($ac == 'meta') {
                 #echo $sql;
                 sql($sql);
                 if (!mysql_affected_rows())
-                    echo 'Ошибка: не изменено!<br>' . mysql_error() . $sql;
+                    echo 'Ошибка: не изменено!<br>' . $mysqli->error . $sql;
                 else
                     echo 'Изменено!';
             }

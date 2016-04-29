@@ -8,7 +8,6 @@ function increment_queries($site_id)
     $stmt->bind_param('iis', $ip, $site_id, date("Y:m:d"));
     $stmt->execute();
 
-    #echo $sql.mysql_error();
     if (!$mysqli->affected_rows) {
         $sql = 'INSERT INTO `queries` VALUES(?,?,1,?)';
 
@@ -17,7 +16,6 @@ function increment_queries($site_id)
         $stmt->bind_param('sii', $dt, $site_id, $ip);
         $stmt->execute();
     }
-    #echo $sql.mysql_error();
 }
 
 function get_queries($site_id)

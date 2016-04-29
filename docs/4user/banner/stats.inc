@@ -27,7 +27,7 @@ $stmt->bind_param('i', $site_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-echo mysql_error();
+echo $mysqli->error;
 if (!$result->num_rows) {
     echo '<h1>Сначала уж загрузи баннер, а потом на него смотри!</h1>';
 } else {
