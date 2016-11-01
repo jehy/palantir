@@ -106,9 +106,7 @@ if ($from) {
         $result = $stmt->get_result();
         $topHigher = $result->fetch_array(MYSQLI_ASSOC);
         $topHigher = $topHigher[0];
-        $frompage = ceil($topHigher / TOP);
-        if ($frompage == 0)//no one higher
-            $frompage = 1;
+        $frompage = floor(($topHigher + 1) / TOP) + 1;
         $url = 'https://palantir.in/top/' . $row['name_eng'] . '/' . $frompage . '.html#' . $from;
         header("HTTP/1.1 301 Moved Permanently");
         header('Location: ' . $url);
