@@ -99,13 +99,16 @@ if ($from) {
     if ($result->num_rows) {
 
         $row = $result->fetch_array(MYSQLI_ASSOC);
-        $sql = 'SELECT `id` FROM `sources` WHERE((parent=?)and ((today_hosts>?)	or(name<?)and(today_hosts=?)  ))';
+        $sql = 'SELECT count(`id`) FROM `sources` WHERE((parent=?)and ((today_hosts>?)	or(name<?)and(today_hosts=?)))';
         $stmt = $mysqli->prepare($sql);
         $stmt->bind_param('iisi', $row['parent'], $row['today_hosts'], $row['name'], $row['today_hosts']);
         $stmt->execute();
         $result = $stmt->get_result();
-        $frompage = ceil(($result->num_rows + 1) / TOP);
-        if ($frompage == 0) $frompage = 1;
+        $topHigher = $result->fetch_array(MYSQLI_ASSOC);
+        $topHigher = $topHigher[0];
+        $frompage = ceil($topHigher / TOP);
+        if ($frompage == 0)//no one higher
+            $frompage = 1;
         $url = 'https://palantir.in/top/' . $row['name_eng'] . '/' . $frompage . '.html#' . $from;
         header("HTTP/1.1 301 Moved Permanently");
         header('Location: ' . $url);
