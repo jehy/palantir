@@ -30,7 +30,7 @@ if ($step == 0) {
             <input type='hidden' name='ac' value='mirrors'>
         </table>
         <input type='Submit' class='menu' value='вставить'></form>
-<?
+    <?
 }
 if ($step == 4) {
     $sql = 'DELETE FROM mirrors WHERE id="' . $nid . '"';
@@ -88,14 +88,14 @@ $result = sql($sql);
 while ($row = mysql_fetch_array($result)) {
     ?>
     <table>
-    <tr>
-        <td><?= $row['name']; ?></td>
-        <td>Priority=<?= $row['priority']; ?></td>
-        <td>Status=<?= $row['status']; ?></td>
-    </tr>
-    <tr>
-        <td><em><?= $row['url']; ?></em></td>
-    </tr>
+        <tr>
+            <td><?= $row['name']; ?></td>
+            <td>Priority=<?= $row['priority']; ?></td>
+            <td>Status=<?= $row['status']; ?></td>
+        </tr>
+        <tr>
+            <td><em><?= $row['url']; ?></em></td>
+        </tr>
     </table>
     <input type='button' class='menu' value='удалить'
            onClick="window.location.href = 'index.php?page=admin&ac=mirrors&step=4&nid=<?= $row[id]; ?>'">
@@ -105,6 +105,6 @@ while ($row = mysql_fetch_array($result)) {
            onClick="window.location.href = 'index.php?page=admin&ac=mirrors&step=2&nid=<?= $row[id]; ?>'"><br><br>
     <br>
     <hr>
-<?
+    <?
 }
 ?>

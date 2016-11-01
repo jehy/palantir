@@ -1,4 +1,4 @@
-<?if ($addrec) {
+<? if ($addrec) {
     $passwordx = str_replace('"', "&#34;", $passwordx);
     $loginx = str_replace('"', "&#34;", $loginx);
     $passwordx = str_replace("'", "&#039;", $passwordx);

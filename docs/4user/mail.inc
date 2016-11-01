@@ -1,4 +1,4 @@
-<?if (isset($send)) {//echo $very_secret_code;
+<? if (isset($send)) {//echo $very_secret_code;
     if ($very_secret_code == 'false') {
 
 

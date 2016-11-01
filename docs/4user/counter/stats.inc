@@ -25,7 +25,7 @@ if ($result->num_rows)
 if ($own) {
     ?>
     <a href='?page=user'>Вернуться в систему администрирования</a><br>
-<?
+    <?
 }
 ?><a href='?page=stats&site_id=<?= $site_id; ?>'>Вернуться в статистику</a><br><?
 if ($ac == 'vistime') include('4user/counter/vistime.inc');
@@ -51,7 +51,7 @@ elseif ($ac == 'referers') {
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_array(MYSQLI_ASSOC);
-        echo $row['name'];?></strong>":<br>
+        echo $row['name']; ?></strong>":<br>
 
     <a href="<?= COMMON_URL; ?>index.php?page=stats&ac=referers&site_id=<?= $site_id; ?>">Откуда посещали</a><br>
     <a href="<?= COMMON_URL; ?>index.php?page=stats&ac=vistime&site_id=<?= $site_id; ?>">Время всех визитов за день</a>
@@ -63,7 +63,7 @@ elseif ($ac == 'referers') {
     Хостов всего:<?= $row['total_hosts']; ?><br>
     Хитов сегодня:<?= $row['today_hits']; ?><br>
     Хитов всего:<?= $row['total_hits']; ?>
-<?
+    <?
 }
 #else echo'<h2>Статистика данного сайта вам недоступна!</h2>';
 ?>

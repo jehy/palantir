@@ -12,7 +12,7 @@ function increment_queries($site_id)
         $sql = 'INSERT INTO `queries` VALUES(?,?,1,?)';
 
         $stmt = $mysqli->prepare($sql);
-        $dt=date("Y:m:d");
+        $dt = date("Y:m:d");
         $stmt->bind_param('sii', $dt, $site_id, $ip);
         $stmt->execute();
     }
@@ -24,7 +24,7 @@ function get_queries($site_id)
     $sql = 'select SUM(`quantity`) from queries where ((site_id=?) and (`date`=?))';
 
     $stmt = $mysqli->prepare($sql);
-    $dt=date("Y:m:d");
+    $dt = date("Y:m:d");
     $stmt->bind_param('is', $site_id, $dt);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -77,7 +77,7 @@ if (@$step != 2) {
     <br>
     <strong>Количество попыток запроса пароля</strong> для сайта ограничено тремя за сутки.<br>
 
-<?
+    <?
 } else {
     $err = array();
     if (!($reveal['login'] || $reveal['password'] || $reveal['nick'] || $reveal['email'] || $reveal['url']))
@@ -154,4 +154,4 @@ if (@$step != 2) {
             }
     }
     if (sizeof($err)) echo implode('<br>', $err);
-}?>
+} ?>

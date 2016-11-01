@@ -2,7 +2,7 @@
 <div align="center">
     Баннеры сайта "<strong><?= GetName($site_id); ?></strong>":
 </div>
-<?$sql = 'select count(*) from shows where site_id=? and type=1';
+<? $sql = 'select count(*) from shows where site_id=? and type=1';
 $r = bind_int_return_row($sql, $site_id);
 $r = $r[0];
 echo '<strong>Накоплено ' . $r . ' показов в сети 88*31</strong>';
@@ -13,7 +13,7 @@ echo '<br><strong>Накоплено ' . $r . ' показов в сети 100*1
 $sql = 'select count(*) from shows where site_id=? and type=3';
 $r = bind_int_return_row($sql, $site_id);
 $r = $r[0];
-echo '<br><strong>Накоплено ' . $r . ' показов в сети 468*60</strong>';?>
+echo '<br><strong>Накоплено ' . $r . ' показов в сети 468*60</strong>'; ?>
 <br><a
     href="<?= COMMON_URL; ?>index.php?page=banner&ac=clicks&site_id=<?= $site_id; ?>">Здесь</a> вы можете узнать, на каких страницах сайтов системы кликали по вашему баннеру за последние 3 дня.
 <?

@@ -56,7 +56,7 @@ if ($step == 2) {
                 <TD><?= $row['description']; ?></TD>
             </TR>
         </table>
-    <?
+        <?
     } else echo 'Неправильный идентификатор сайта.';
 } else {
 
@@ -67,7 +67,7 @@ if ($step == 2) {
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows) {
-        $row = $result->fetch_array(MYSQLI_ASSOC);?>
+        $row = $result->fetch_array(MYSQLI_ASSOC); ?>
         <a href='?page=user'>Вернуться к администрированию</a><br>
         <FORM action='index.php' method='post'>
             <input type='hidden' name='page' value='user'>
@@ -115,7 +115,7 @@ if ($step == 2) {
                 </TR>
             </TABLE>
         </FORM>
-    <?
+        <?
     } else echo 'Вы не имеете прав на администрирование этого сайта!';
 }
 ?>

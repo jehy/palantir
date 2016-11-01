@@ -81,8 +81,8 @@
                 $result = $mysqli->query("select count(*) from sources");
                 $row = $result->fetch_row();
                 echo $row[0]; ?><br>
-            <span
-                class="smaller">За сегодня показов баннеров:</span>&nbsp;<?
+                <span
+                    class="smaller">За сегодня показов баннеров:</span>&nbsp;<?
                 $result = $mysqli->query("select count(*) from go");
                 $row = $result->fetch_row();
                 echo $row[0]; ?>
@@ -98,8 +98,10 @@
                             My += '&pg=' + encodeURIComponent(window.location.href);
                             My += "'  alt='Palantir' title='Каталог фэнтези сайтов Палантир' border='0' width='88px' height='31px'>";
                             document.write(My);</script>
-                        <noscript><img src="/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png" alt='Palantir' title="Каталог фэнтези сайтов Палантир" border=0 width="88px"
-                                       height="31px"></noscript>
+                        <noscript><img
+                                src="/count.php?id=2&today_hits=1&today_hosts=1&total_hosts=1&cid=special_blue.png"
+                                alt='Palantir' title="Каталог фэнтези сайтов Палантир" border=0 width="88px"
+                                height="31px"></noscript>
                     </a>
                 </div>
 

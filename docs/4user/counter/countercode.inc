@@ -16,21 +16,21 @@ function showCNT($t = 0, $img, $site_id)
 {
     if ($t) {
         ?><a title="Каталог фэнтези сайтов Палантир" href='<?= COMMON_URL . '?from=' . $site_id; ?>' target='_blank'>
-<script type="text/javascript">
-Mz = "wh=" + screen.width + 'x' + screen.height;
-My = "<img src='<?=$img;?>";
-My += "&amp;cntc=none&amp;rand=" + Math.random() + "&amp;referer=" + encodeURIComponent(document.referrer);
-My += '&amp;pg=' + encodeURIComponent(window.location.href);
-My += "'  alt='Palantir' title='Каталог фэнтези сайтов Палантир' border='0' width='88px' height='31px'>";
-document.write(My);</script>
-<noscript><img src="<?= $img; ?>" alt='Palantir' title="Каталог фэнтези сайтов Палантир" border=0 width="88px"
-           height="31px"></noscript>
-</a><?
+        <script type="text/javascript">
+            Mz = "wh=" + screen.width + 'x' + screen.height;
+            My = "<img src='<?=$img;?>";
+            My += "&amp;cntc=none&amp;rand=" + Math.random() + "&amp;referer=" + encodeURIComponent(document.referrer);
+            My += '&amp;pg=' + encodeURIComponent(window.location.href);
+            My += "'  alt='Palantir' title='Каталог фэнтези сайтов Палантир' border='0' width='88px' height='31px'>";
+            document.write(My);</script>
+        <noscript><img src="<?= $img; ?>" alt='Palantir' title="Каталог фэнтези сайтов Палантир" border=0 width="88px"
+                       height="31px"></noscript>
+        </a><?
     } else {
-?><a title="Каталог фэнтези сайтов Палантир" href='<?= COMMON_URL . '?from=' . $site_id; ?>' target='_blank'>
-<img src="<?= $img; ?>" alt='Palantir' title="Каталог фэнтези сайтов Палантир" border=0 width="88px"
-     height="31px"></a>
-    <?
+        ?><a title="Каталог фэнтези сайтов Палантир" href='<?= COMMON_URL . '?from=' . $site_id; ?>' target='_blank'>
+        <img src="<?= $img; ?>" alt='Palantir' title="Каталог фэнтези сайтов Палантир" border=0 width="88px"
+             height="31px"></a>
+        <?
     }
 }
 

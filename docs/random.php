@@ -6,14 +6,14 @@ $ip = ip2long($_SERVER['REMOTE_ADDR']);
 include('scripts/common.inc');
 $sql = 'update `check` set `rand`=?,`time`=? where (ip=?)';
 $stmt = $mysqli->prepare($sql);
-$t=time();
+$t = time();
 $stmt->bind_param('sis', $random, $t, $ip);
 $stmt->execute();
 if ($mysqli->affected_rows == 0) {
     $sql = 'insert into `check` values(?,?,?)';
 
     $stmt = $mysqli->prepare($sql);
-    $t=time();
+    $t = time();
     $stmt->bind_param('isi', $ip, $random, $t);
     $stmt->execute();
 }

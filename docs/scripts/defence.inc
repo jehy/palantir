@@ -16,7 +16,7 @@ function myslashes($str)
     return $str;
 }
 
-$vars = array_merge($_GET,$_POST,$_COOKIE);
+$vars = array_merge($_GET, $_POST, $_COOKIE);
 #unset($_GET,$_COOKIE,$_POST,$_REQUEST,$HTTP_COOKIE_VARS,$HTTP_GET_VARS,$HTTP_POST_VARS,$_FILES,$_ENV,$HTTP_ENV_VARS,$_SERVER,$HTTP_SERVER_VARS,$HTTP_POST_FILES);
 
 
@@ -49,7 +49,7 @@ $restricted = '';
 foreach ($vars as $key => $val) {
     ;
     if (in_array($key, $allowed))
-        $$key=($val);//	$$key=myslashes($val);
+        $$key = ($val);//	$$key=myslashes($val);
     else {
         $restricted .= ' $' . $key;
         unset($$key);

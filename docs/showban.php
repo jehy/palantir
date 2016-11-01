@@ -16,4 +16,4 @@ if (is_numeric($id)) {
             Header('Location: ' . $mirror['url'] . 'banners/imgs/img_' . $row['id'] . '.' . $row['img_type']);
         }
     } else echo '0';
-}?>
+} ?>

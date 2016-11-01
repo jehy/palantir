@@ -27,7 +27,7 @@ function redirect2($url)
         @header('Location: http://' . $url);
     ?>
     <html>
-<head><title>Перенаправляем</title>
+<head><title>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="robots" content="noindex,nofollow"/>
     <?php if ($url) echo '<meta http-equiv="refresh" content="0; url=http://' . $url . ';" />'; ?>
@@ -36,9 +36,9 @@ function redirect2($url)
 <div align="center" style="margin-top: 15em;">
     <?php
     if ($url)
-        echo '<noindex>Если вас не перенаправило автоматически, пожалуйста, нажмите <a href="http://' . $url . '">эту ссылку</a> для перехода на сайт ' . $url . '</noindex>';
+        echo '<noindex>пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ <a href="http://' . $url . '">пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</a> пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ ' . $url . '</noindex>';
     else
-        echo('Неправильный редирект!');?>
+        echo('пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!'); ?>
 </div>
 </body></html><?php die();
 }

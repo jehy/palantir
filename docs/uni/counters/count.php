@@ -12,6 +12,7 @@ function rep($arg)
     $arg = str_replace(array('..', chr(0), chr(27)), '', $arg);
     return $arg;
 }
+
 $today_hits = rep(@$_GET['today_hits']);
 $total_hits = rep(@$_GET['total_hits']);
 $today_hosts = rep(@$_GET['today_hosts']);

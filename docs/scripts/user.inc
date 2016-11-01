@@ -55,12 +55,10 @@ function get_user_type()
     $admin_user_id = '';
     $admin_user = false;
     $our_user = false;
-    if ($ac == 'login')
-    {
-        $clogin=$login;
-        $cpassword=$password;
-    }
-    elseif ($ac == 'logout') {
+    if ($ac == 'login') {
+        $clogin = $login;
+        $cpassword = $password;
+    } elseif ($ac == 'logout') {
         $our_user_id = $admin_user_id = $our_user = $admin_user = $login = $password = $clogin = $cpassword = false;
         setcookie('clogin', '');
         setcookie('cpassword', '');

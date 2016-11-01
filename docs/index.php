@@ -83,7 +83,7 @@ header('Content-type: text/html; charset="utf-8"', true);
     Если этого не случилось - нажмите <a href="<?= $row['url'] ?>">на эту ссылку.</a>
 
 </body>
-</html><?die();
+</html><? die();
 }
 else $page = 'index';
 //if we dunno where to go^^

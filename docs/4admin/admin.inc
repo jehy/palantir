@@ -82,7 +82,7 @@ if ($admin_user) {
             </tr>
         </table>
         </table>
-    <?
+        <?
     }
-} else echo '<h1>Неаффторизован!!</h2>';?>
+} else echo '<h1>Неаффторизован!!</h2>'; ?>
 

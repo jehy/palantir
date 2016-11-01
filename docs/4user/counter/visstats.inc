@@ -100,9 +100,9 @@ while ($row = $result->fetch_array(MYSQLI_ASSOC))
     $stmt->execute();
     $result = $stmt->get_result();
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    if ($a == 1) $back = 'dark'; else $back = 'white';
-    $a = -$a;
-    echo '
+        if ($a == 1) $back = 'dark'; else $back = 'white';
+        $a = -$a;
+        echo '
     <tr class="bg' . $back . '">
         <td>' . $row['useragent'] . '</td>
         <td>' . $row['quantity'] . '</td>

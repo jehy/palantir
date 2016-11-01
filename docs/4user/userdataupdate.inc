@@ -2,13 +2,13 @@
 if ($step == 2) {
     ?>
     <a href='?page=user'>Вернуться в систему администрирования</a><br>
-    <?if (!$error)
+    <? if (!$error)
         echo 'Профиль успешно изменён!';
     else
         echo 'Ошибки при изменении профиля:' . $error . '<br><a href="index.php?page=user&ac=changedata">Попробовать ещё</a>';
 } else {
     ?><a href='?page=user'>Вернуться в систему администрирования</a><br>
-    <?$sql = 'select * from users where id=? limit 1';
+    <? $sql = 'select * from users where id=? limit 1';
     $row = bind_int_return_array($sql, $our_user_id);
     ?>
     <FORM action='index.php' method='post'>

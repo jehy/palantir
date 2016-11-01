@@ -17,7 +17,7 @@ if ($result->num_rows) {
         <td>Кол-во посещений:</td>
         <td></td>
     </tr>
-    <?$sql = "select distinct url from clicks where site_id=?";
+    <? $sql = "select distinct url from clicks where site_id=?";
 
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param('i', $my_id);

@@ -123,7 +123,7 @@ function reguser()
             </TR>
         </table>
     </form>
-<?
+    <?
 }
 
 ###################################
@@ -138,8 +138,8 @@ function reguser2()
         $sql = 'select 1 from `check` where ((`ip`=?)and(time>?) and (rand=?)) limit 1';
 
         $stmt = $mysqli->prepare($sql);
-        $time=(time() - 60 * 15);
-        $ip=ip2long($_SERVER['REMOTE_ADDR']);
+        $time = (time() - 60 * 15);
+        $ip = ip2long($_SERVER['REMOTE_ADDR']);
         $stmt->bind_param('sis', $ip, $time, $reg['if_hacker']);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -211,8 +211,8 @@ function regsite3()
     $sql = 'select 1 from `check` where ((`ip`=?)and(time>?) and (rand=?)) limit 1';
 
     $stmt = $mysqli->prepare($sql);
-    $ip=ip2long($_SERVER['REMOTE_ADDR']);
-    $time=(time() - 60 * 15);
+    $ip = ip2long($_SERVER['REMOTE_ADDR']);
+    $time = (time() - 60 * 15);
     $stmt->bind_param('sis', $ip, $time, $reg['if_hacker']);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -240,7 +240,7 @@ function regsite3()
     if (!$error) {
         $sql = 'DELETE from `check` where `ip`=?';
         $stmt = $mysqli->prepare($sql);
-        $ip=ip2long($_SERVER['REMOTE_ADDR']);
+        $ip = ip2long($_SERVER['REMOTE_ADDR']);
         $stmt->bind_param('i', $ip);
         $stmt->execute();
 
@@ -267,7 +267,7 @@ function regsite2()
     ?>
     <h2>Добавление сайта, шаг №2</h2>
     Вы выбрали раздел "
-    <?$sql = 'select name from types where id=?';
+    <? $sql = 'select name from types where id=?';
     $r = bind_int_return_row($sql, $sid);
     echo $r[0];
     ?>"&nbsp;
@@ -331,7 +331,7 @@ function regsite2()
             </TR>
         </table>
     </form>
-<?
+    <?
 }
 
 ###################################

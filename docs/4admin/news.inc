@@ -14,7 +14,7 @@ if ($step == 0) {
         <input type='hidden' name='step' value='1'>
         <input type='hidden' name='ac' value='news'>
     </form>
-<?
+    <?
 }
 if ($step == 4) {
     $sql = 'DELETE FROM p_news WHERE id="' . $nid . '"';
@@ -55,7 +55,6 @@ if ($step == 3) {
     }
 }
 ?>
-
 
 
 <input type="button" class="menu" value="обновить"

@@ -66,7 +66,7 @@ if ($ac == 'meta') {
             <input type="checkbox" name="import" value="yandex">Import from Yandex<br>
             <textarea cols="50" rows="2" name='keywords[<?= $row['id']; ?>]'><?= $row['keywords']; ?></textarea><br>
             <input type="checkbox" name='delete[<?= $row['id']; ?>]' value="1">Удалить<br>
-        <?
+            <?
         }
         ?><input type='Submit' value='изменить' class="button"></form><?
         echo $showpages;
