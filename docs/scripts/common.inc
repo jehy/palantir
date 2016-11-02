@@ -174,9 +174,9 @@ function CountPages($kat_id)
 {
     global $mysqli;
     $kats = GetKats($kat_id, 1);
-    $sql = 'select count(1) from `sources` where `parent` in(?)';
+    $sql = 'select count(1) from `sources` where `parent` in('.$kats.')';
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param('i', $kats);
+    #$stmt->bind_param('s', $kats);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_row();
