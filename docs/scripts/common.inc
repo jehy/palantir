@@ -145,7 +145,7 @@ function showlev($n)
 {
     global $mysqli;
     $kats = array();
-    $sql = 'select id from types where parent=? limit 1';
+    $sql = 'select id from types where parent=?';
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param('i', $n);
     $stmt->execute();
@@ -159,15 +159,15 @@ function showlev($n)
     return $kats;
 }
 
-function GetKats($kat_id, $ifstring)
+function GetKats($kat_id, $returnString)
 {
     $kats = showlev($kat_id);
-    if (!$ifstring)
-        return $kats;
-    else {
+    if ($returnString){
         $kats = implode(',', $kats);
         return $kats;
     }
+    else
+        return $kats;
 }
 
 function CountPages($kat_id)
