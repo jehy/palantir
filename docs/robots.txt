@@ -1,5 +1,7 @@
 User-Agent: *
 Host: Palantir.in
 Disallow: /goto*
+Disallow: /index.php?from*
+Disallow: index.php?from*
 Allow: /
 Sitemap: http://palantir.in/sitemap.xml
