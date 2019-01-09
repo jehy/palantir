@@ -30,7 +30,7 @@ function GetName($site_id)
 
 function MaskLink($url)
 {
-    $url = str_replace('http://', '', masktags($url));
+    $url = str_replace(array('http://', 'https://'), '', masktags($url));
     return COMMON_URL . 'goto/' . ($url);
 }
 
