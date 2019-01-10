@@ -20,7 +20,7 @@
  */
 class SAPE_base
 {
-    protected $_version = '1.3.7';
+    protected $_version = '1.4.3';
 
     protected $_verbose = false;
 
@@ -75,7 +75,7 @@ class SAPE_base
      */
     protected $_is_our_bot = false;
 
-    protected $_debug = false;
+    protected $_debug                   = false;
     protected $_file_contents_for_debug = array();
 
     /**
@@ -90,6 +90,17 @@ class SAPE_base
      */
     protected $_db_file = '';
 
+    /**
+     * Формат запроса. serialize|php-require
+     * @var string
+     */
+    protected $_format = 'serialize';
+
+    /**
+     * Флаг для разбиения links.db по отдельным файлам.
+     * @var bool
+     */
+    protected $_split_data_file = true;
     /**
      * Откуда будем брать uri страницы: $_SERVER['REQUEST_URI'] или getenv('REQUEST_URI')
      * @var bool
@@ -119,7 +130,7 @@ class SAPE_base
                 $host = $options['host'];
             }
         } elseif (strlen($options)) {
-            $host = $options;
+            $host    = $options;
             $options = array();
         } else {
             $options = array();
@@ -166,10 +177,10 @@ class SAPE_base
             if (isset($_COOKIE['sape_debug']) && ($_COOKIE['sape_debug'] == 1)) {
                 $this->_debug = true;
                 //для удобства дебега саппортом
-                $this->_options = $options;
+                $this->_options            = $options;
                 $this->_server_request_uri = $_SERVER['REQUEST_URI'];
                 $this->_getenv_request_uri = getenv('REQUEST_URI');
-                $this->_SAPE_USER = _SAPE_USER;
+                $this->_SAPE_USER          = _SAPE_USER;
             }
             if (isset($_COOKIE['sape_updatedb']) && ($_COOKIE['sape_updatedb'] == 1)) {
                 $this->_force_update_db = true;
@@ -216,53 +227,24 @@ class SAPE_base
         if (isset($options['show_counter_separately'])) {
             $this->_show_counter_separately = (bool)$options['show_counter_separately'];
         }
-    }
 
-    /**
-     * Функция обработки ошибок
-     */
-    protected function _raise_error($e)
-    {
-
-        $this->_errors[] = $e;
-
-        if ($this->_verbose == true) {
-            print '<p style="color: red; font-weight: bold;">SAPE ERROR: ' . $e . '</p>';
+        if (isset($options['format']) && in_array($options['format'], array('serialize', 'php-require'))) {
+            $this->_format = $options['format'];
         }
 
-        return false;
+        if (isset($options['split_data_file'])) {
+            $this->_split_data_file = (bool)$options['split_data_file'];
+        }
     }
 
     /**
-     * Вернуть js-код
-     * - работает только когда параметр конструктора show_counter_separately = true
+     * Получить строку User-Agent
      *
      * @return string
      */
-    public function return_counter()
+    protected function _get_full_user_agent_string()
     {
-        //если show_counter_separately = false и выполнен вызов этого метода,
-        //то заблокировать вывод js-кода вместе с контентом
-        if (false == $this->_show_counter_separately) {
-            $this->_show_counter_separately = true;
-        }
-
-        return $this->_return_obligatory_page_content();
-    }
-
-    protected function _return_obligatory_page_content()
-    {
-        $s_globals = new SAPE_globals();
-
-        $html = '';
-        if (isset($this->_page_obligatory_output) && !empty($this->_page_obligatory_output)
-            && false == $s_globals->page_obligatory_output_shown()
-        ) {
-            $s_globals->page_obligatory_output_shown(true);
-            $html = $this->_page_obligatory_output;
-        }
-
-        return $html;
+        return $this->_user_agent . ' ' . $this->_version;
     }
 
     /**
@@ -277,148 +259,6 @@ class SAPE_base
         $data = '<!-- <sape_debug_info>' . @base64_encode(serialize($data)) . '</sape_debug_info> -->';
 
         return $data;
-    }
-
-    /**
-     * Загрузка данных
-     */
-    protected function _load_data()
-    {
-        $this->_db_file = $this->_get_db_file();
-
-        if (!is_file($this->_db_file)) {
-            // Пытаемся создать файл.
-            if (@touch($this->_db_file)) {
-                @chmod($this->_db_file, 0666); // Права доступа
-            } else {
-                return $this->_raise_error('Нет файла ' . $this->_db_file . '. Создать не удалось. Выставите права 777 на папку.');
-            }
-        }
-
-        if (!is_writable($this->_db_file)) {
-            return $this->_raise_error('Нет доступа на запись к файлу: ' . $this->_db_file . '! Выставите права 777 на папку.');
-        }
-
-        @clearstatcache();
-
-        $data = $this->_read($this->_db_file);
-        if (
-            $this->_force_update_db
-            || (
-                !$this->_is_our_bot
-                &&
-                (
-                    filemtime($this->_db_file) < (time() - $this->_cache_lifetime)
-                    ||
-                    filesize($this->_db_file) == 0
-                    ||
-                    @unserialize($data) == false
-                )
-            )
-        ) {
-            // Чтобы не повесить площадку клиента и чтобы не было одновременных запросов
-            @touch($this->_db_file, (time() - $this->_cache_lifetime + $this->_cache_reloadtime));
-
-            $path = $this->_get_dispenser_path();
-            if (strlen($this->_charset)) {
-                $path .= '&charset=' . $this->_charset;
-            }
-
-            foreach ($this->_server_list as $server) {
-                if ($data = $this->_fetch_remote_file($server, $path)) {
-                    if (substr($data, 0, 12) == 'FATAL ERROR:') {
-                        $this->_raise_error($data);
-                    } else {
-                        // [псевдо]проверка целостности:
-                        $hash = @unserialize($data);
-                        if ($hash != false) {
-                            // попытаемся записать кодировку в кеш
-                            $hash['__sape_charset__'] = $this->_charset;
-                            $hash['__last_update__'] = time();
-                            $hash['__multi_site__'] = $this->_multi_site;
-                            $hash['__fetch_remote_type__'] = $this->_fetch_remote_type;
-                            $hash['__ignore_case__'] = $this->_ignore_case;
-                            $hash['__php_version__'] = phpversion();
-                            $hash['__server_software__'] = $_SERVER['SERVER_SOFTWARE'];
-
-                            $data_new = @serialize($hash);
-                            if ($data_new) {
-                                $data = $data_new;
-                            }
-
-                            $this->_write($this->_db_file, $data);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Убиваем PHPSESSID
-        if (strlen(session_id())) {
-            $session = session_name() . '=' . session_id();
-            $this->_request_uri = str_replace(array('?' . $session, '&' . $session), '', $this->_request_uri);
-        }
-
-        $this->_set_data(@unserialize($data));
-
-        return true;
-    }
-
-    /**
-     * Получить имя файла с даными
-     *
-     * @return string
-     */
-    protected function _get_db_file()
-    {
-        return '';
-    }
-
-    /**
-     * Функция чтения из локального файла
-     */
-    protected function _read($filename)
-    {
-
-        $fp = @fopen($filename, 'rb');
-        @flock($fp, LOCK_SH);
-        if ($fp) {
-            clearstatcache();
-            $length = @filesize($filename);
-
-            if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-                $mqr = @get_magic_quotes_runtime();
-                @set_magic_quotes_runtime(0);
-            }
-
-            if ($length) {
-                $data = @fread($fp, $length);
-            } else {
-                $data = '';
-            }
-
-            if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-                @set_magic_quotes_runtime($mqr);
-            }
-
-            @flock($fp, LOCK_UN);
-            @fclose($fp);
-
-            return $data;
-        }
-
-        return $this->_raise_error('Не могу считать данные из файла: ' . $filename);
-    }
-
-    /**
-     * Получить URI к хосту диспенсера
-     *
-     * @return string
-     */
-    protected function _get_dispenser_path()
-    {
-        return '';
     }
 
     /**
@@ -446,7 +286,7 @@ class SAPE_base
             $this->_fetch_remote_type = 'file_get_contents';
 
             if ($specifyCharset && function_exists('stream_context_create')) {
-                $opts = array(
+                $opts    = array(
                     'http' => array(
                         'method' => 'GET',
                         'header' => 'Accept-Charset: ' . $this->_charset . "\r\n"
@@ -491,8 +331,8 @@ class SAPE_base
             }
         } else {
             $this->_fetch_remote_type = 'socket';
-            $buff = '';
-            $fp = @fsockopen($host, 80, $errno, $errstr, $this->_socket_timeout);
+            $buff                     = '';
+            $fp                       = @fsockopen($host, 80, $errno, $errstr, $this->_socket_timeout);
             if ($fp) {
                 @fputs($fp, "GET {$path} HTTP/1.0\r\nHost: {$host}\r\n");
                 if ($specifyCharset) {
@@ -515,13 +355,39 @@ class SAPE_base
     }
 
     /**
-     * Получить строку User-Agent
-     *
-     * @return string
+     * Функция чтения из локального файла
      */
-    protected function _get_full_user_agent_string()
+    protected function _read($filename)
     {
-        return $this->_user_agent . ' ' . $this->_version;
+
+        $fp = @fopen($filename, 'rb');
+        @flock($fp, LOCK_SH);
+        if ($fp) {
+            clearstatcache();
+            $length = @filesize($filename);
+
+            if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+                $mqr = @get_magic_quotes_runtime();
+                @set_magic_quotes_runtime(0);
+            }
+
+            if ($length) {
+                $data = @fread($fp, $length);
+            } else {
+                $data = '';
+            }
+
+            if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+                @set_magic_quotes_runtime($mqr);
+            }
+
+            @flock($fp, LOCK_UN);
+            @fclose($fp);
+
+            return $data;
+        }
+
+        return $this->_raise_error('Не могу считать данные из файла: ' . $filename);
     }
 
     /**
@@ -565,10 +431,231 @@ class SAPE_base
     }
 
     /**
+     * Функция обработки ошибок
+     */
+    protected function _raise_error($e)
+    {
+
+        $this->_errors[] = $e;
+
+        if ($this->_verbose == true) {
+            print '<p style="color: red; font-weight: bold;">SAPE ERROR: ' . $e . '</p>';
+        }
+
+        return false;
+    }
+
+    /**
+     * Получить имя файла с даными
+     *
+     * @return string
+     */
+    protected function _get_db_file()
+    {
+        return '';
+    }
+
+    /**
+     * Получить имя файла с мета-информацией
+     *
+     * @return string
+     */
+    protected function _get_meta_file()
+    {
+        return '';
+    }
+
+    /**
+     * Получить префикс файла в режиме split_data_file.
+     *
+     * @return string
+     */
+    protected function _get_save_filename_prefix()
+    {
+        if ($this->_split_data_file) {
+            return '.' . crc32($this->_request_uri) % 100;
+        } else {
+            return '';
+        }
+    }
+    /**
+     * Получить URI к хосту диспенсера
+     *
+     * @return string
+     */
+    protected function _get_dispenser_path()
+    {
+        return '';
+    }
+
+    /**
      * Сохранить данные, полученные из файла, в объекте
      */
     protected function _set_data($data)
     {
+    }
+
+    /**
+     * Расшифровывает данные
+     *
+     * @param string $data
+     *
+     * @return array|bool
+     */
+    protected function _uncode_data($data)
+    {
+        return @unserialize($data);
+    }
+
+    /**
+     * Шифрует данные для сохранения.
+     *
+     * @param $data
+     *
+     * @return string
+     */
+    protected function _code_data($data)
+    {
+        return @serialize($data);
+    }
+
+    /**
+     * Сохранение данных в файл.
+     *
+     * @param string $data
+     * @param string $filename
+     */
+    protected function _save_data($data, $filename = '')
+    {
+        $this->_write($filename, $data);
+    }
+    /**
+     * Загрузка данных
+     */
+    protected function _load_data()
+    {
+        $this->_db_file = $this->_get_db_file();
+
+        if (!is_file($this->_db_file)) {
+            // Пытаемся создать файл.
+            if (@touch($this->_db_file)) {
+                @chmod($this->_db_file, 0666); // Права доступа
+            } else {
+                return $this->_raise_error('Нет файла ' . $this->_db_file . '. Создать не удалось. Выставите права 777 на папку.');
+            }
+        }
+
+        if (!is_writable($this->_db_file)) {
+            return $this->_raise_error('Нет доступа на запись к файлу: ' . $this->_db_file . '! Выставите права 777 на папку.');
+        }
+
+        @clearstatcache();
+
+        $data = $this->_read($this->_db_file);
+        if (
+            $this->_force_update_db
+            || (
+                !$this->_is_our_bot
+                &&
+                (
+                    filemtime($this->_db_file) < (time() - $this->_cache_lifetime)
+                    ||
+                    filesize($this->_db_file) == 0
+                    ||
+                    $this->_uncode_data($data) == false
+                )
+            )
+        ) {
+            // Чтобы не повесить площадку клиента и чтобы не было одновременных запросов
+            @touch($this->_db_file, (time() - $this->_cache_lifetime + $this->_cache_reloadtime));
+
+            $path = $this->_get_dispenser_path();
+            if (strlen($this->_charset)) {
+                $path .= '&charset=' . $this->_charset;
+            }
+            if ($this->_format) {
+                $path .= '&format=' . $this->_format;
+            }
+            foreach ($this->_server_list as $server) {
+                if ($data = $this->_fetch_remote_file($server, $path)) {
+                    if (substr($data, 0, 12) == 'FATAL ERROR:') {
+                        $this->_raise_error($data);
+                    } else {
+                        // [псевдо]проверка целостности:
+                        $hash = $this->_uncode_data($data);
+                        if ($hash != false) {
+                            // попытаемся записать кодировку в кеш
+                            $hash['__sape_charset__']      = $this->_charset;
+                            $hash['__last_update__']       = time();
+                            $hash['__multi_site__']        = $this->_multi_site;
+                            $hash['__fetch_remote_type__'] = $this->_fetch_remote_type;
+                            $hash['__ignore_case__']       = $this->_ignore_case;
+                            $hash['__php_version__']       = phpversion();
+                            $hash['__server_software__']   = $_SERVER['SERVER_SOFTWARE'];
+
+                            $data_new = $this->_code_data($hash);
+                            if ($data_new) {
+                                $data = $data_new;
+                            }
+
+                            $this->_save_data($data, $this->_db_file);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Убиваем PHPSESSID
+        if (strlen(session_id())) {
+            $session            = session_name() . '=' . session_id();
+            $this->_request_uri = str_replace(array('?' . $session, '&' . $session), '', $this->_request_uri);
+        }
+        $data = $this->_uncode_data($data);
+        if ($this->_split_data_file) {
+            $meta = $this->_uncode_data($this->_read($this->_get_meta_file()));
+            if (!is_array($data)) {
+                $data = array();
+            }
+            if (is_array($meta)) {
+                $data = array_merge($data, $meta);
+            }
+        }
+        $this->_set_data($data);
+
+        return true;
+    }
+
+    protected function _return_obligatory_page_content()
+    {
+        $s_globals = new SAPE_globals();
+
+        $html = '';
+        if (isset($this->_page_obligatory_output) && !empty($this->_page_obligatory_output)
+            && false == $s_globals->page_obligatory_output_shown()
+        ) {
+            $s_globals->page_obligatory_output_shown(true);
+            $html = $this->_page_obligatory_output;
+        }
+
+        return $html;
+    }
+
+    /**
+     * Вернуть js-код
+     * - работает только когда параметр конструктора show_counter_separately = true
+     *
+     * @return string
+     */
+    public function return_counter()
+    {
+        //если show_counter_separately = false и выполнен вызов этого метода,
+        //то заблокировать вывод js-кода вместе с контентом
+        if (false == $this->_show_counter_separately) {
+            $this->_show_counter_separately = true;
+        }
+
+        return $this->_return_obligatory_page_content();
     }
 }
 
@@ -577,11 +664,6 @@ class SAPE_base
  */
 class SAPE_globals
 {
-
-    public function block_css_shown($toggle = false)
-    {
-        return $this->_get_toggle_flag('block_css_shown', $toggle);
-    }
 
     protected function _get_toggle_flag($name, $toggle = false)
     {
@@ -597,6 +679,11 @@ class SAPE_globals
         }
 
         return $flags[$name];
+    }
+
+    public function block_css_shown($toggle = false)
+    {
+        return $this->_get_toggle_flag('block_css_shown', $toggle);
     }
 
     public function block_ins_beforeall_shown($toggle = false)
@@ -617,15 +704,15 @@ class SAPE_client extends SAPE_base
 {
 
     protected $_links_delimiter = '';
-    protected $_links = array();
-    protected $_links_page = array();
-    protected $_teasers_page = array();
+    protected $_links           = array();
+    protected $_links_page      = array();
+    protected $_teasers_page    = array();
 
-    protected $_user_agent = 'SAPE_Client PHP';
-    protected $_show_only_block = false;
-    protected $_block_tpl = '';
-    protected $_block_tpl_options = array();
-    protected $_block_uri_idna = array();
+    protected $_user_agent         = 'SAPE_Client PHP';
+    protected $_show_only_block    = false;
+    protected $_block_tpl          = '';
+    protected $_block_tpl_options  = array();
+    protected $_block_uri_idna     = array();
     protected $_return_links_calls;
     protected $_teasers_css_showed = false;
 
@@ -637,91 +724,125 @@ class SAPE_client extends SAPE_base
     }
 
     /**
-     * Вывод ссылок в обычном виде - текст с разделителем
+     * Обработка html для массива ссылок
      *
-     * - Примечание: начиная с версии 1.2.2 второй аргумент $offset убран. Если
-     * передавать его согласно старой сигнатуре, то он будет проигнорирован.
-     *
-     * @param int $n Количествово ссылок, которые нужно вывести
-     * @param array $options Опции
-     *
-     * <code>
-     * $options = array();
-     * $options['as_block'] = (false|true);
-     * // Показывать ли ссылки в виде блока
-     * </code>
-     *
-     * @see return_block_links()
-     * @see return_counter()
+     * @param string     $html
+     * @param null|array $options
      *
      * @return string
      */
-    public function return_links($n = null, $options = null)
+    protected function _return_array_links_html($html, $options = null)
     {
 
+        if (empty($options)) {
+            $options = array();
+        }
+
+        // если запрошена определенная кодировка, и известна кодировка кеша, и они разные, конвертируем в заданную
+        if (
+            strlen($this->_charset) > 0
+            &&
+            strlen($this->_sape_charset) > 0
+            &&
+            $this->_sape_charset != $this->_charset
+            &&
+            function_exists('iconv')
+        ) {
+            $new_html = @iconv($this->_sape_charset, $this->_charset, $html);
+            if ($new_html) {
+                $html = $new_html;
+            }
+        }
+
+        if ($this->_is_our_bot) {
+
+            $html = '<sape_noindex>' . $html . '</sape_noindex>';
+
+            if (isset($options['is_block_links']) && true == $options['is_block_links']) {
+
+                if (!isset($options['nof_links_requested'])) {
+                    $options['nof_links_requested'] = 0;
+                }
+                if (!isset($options['nof_links_displayed'])) {
+                    $options['nof_links_displayed'] = 0;
+                }
+                if (!isset($options['nof_obligatory'])) {
+                    $options['nof_obligatory'] = 0;
+                }
+                if (!isset($options['nof_conditional'])) {
+                    $options['nof_conditional'] = 0;
+                }
+
+                $html = '<sape_block nof_req="' . $options['nof_links_requested'] .
+                        '" nof_displ="' . $options['nof_links_displayed'] .
+                        '" nof_oblig="' . $options['nof_obligatory'] .
+                        '" nof_cond="' . $options['nof_conditional'] .
+                        '">' . $html .
+                        '</sape_block>';
+            }
+        }
+
+        return $html;
+    }
+
+    /**
+     * Финальная обработка html перед выводом ссылок
+     *
+     * @param string $html
+     *
+     * @return string
+     */
+    protected function _return_html($html)
+    {
+        if (false == $this->_show_counter_separately) {
+            $html = $this->_return_obligatory_page_content() . $html;
+        }
+
+        return $this->_add_debug_info($html);
+    }
+
+    protected function _add_debug_info($html)
+    {
         if ($this->_debug) {
-            if (function_exists('debug_backtrace')) {
-                $this->_return_links_calls[] = debug_backtrace();
-            } else {
-                $this->_return_links_calls = "(function_exists('debug_backtrace')==false";
+            if (!empty($this->_links['__sape_teaser_images_path__'])) {
+                $this->_add_file_content_for_debug($this->_links['__sape_teaser_images_path__']);
             }
+            $this->_add_file_content_for_debug('.htaccess');
+
+            $html .= $this->_debug_output($this);
         }
 
-        $numargs = func_num_args();
-        $args = func_get_args();
+        return $html;
+    }
 
-        //Проверяем аргументы для старой сигнатуры вызова
-        if (2 == $numargs) {           // return_links($n, $options)
-            if (!is_array($args[1])) { // return_links($n, $offset) - deprecated!
-                $options = null;
-            }
-        } elseif (2 < $numargs) {        // return_links($n, $offset, $options) - deprecated!
+    protected function _add_file_content_for_debug($file_name)
+    {
+        $path                                               = realpath(
+            rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR)
+            . DIRECTORY_SEPARATOR
+            . strtok($file_name, '?')
+        );
+        $this->_file_contents_for_debug[$file_name]['path'] = $path;
+        if ($path) {
+            $this->_file_contents_for_debug[$file_name]['contents'] = @file_get_contents($path);
+        }
+    }
 
-            if (!is_array($options)) {
-                $options = $args[2];
+    /**
+     * Eсли запрошена определенная кодировка, и известна кодировка кеша, и они разные, конвертируем в заданную
+     */
+    protected function _convertCharset($html)
+    {
+        if (strlen($this->_charset) > 0
+            && strlen($this->_sape_charset) > 0
+            && $this->_sape_charset != $this->_charset
+            && function_exists('iconv')
+        ) {
+            $new_html = @iconv($this->_sape_charset, $this->_charset, $html);
+            if ($new_html) {
+                $html = $new_html;
             }
         }
-
-        //Опрелелить, как выводить ссылки
-        $as_block = $this->_show_only_block;
-
-        if (is_array($options) && isset($options['as_block']) && false == $as_block) {
-            $as_block = $options['as_block'];
-        }
-
-        if (true == $as_block && isset($this->_block_tpl)) {
-            return $this->return_block_links($n, $options);
-        }
-
-        //-------
-
-        if (is_array($this->_links_page)) {
-
-            $total_page_links = count($this->_links_page);
-
-            if (!is_numeric($n) || $n > $total_page_links) {
-                $n = $total_page_links;
-            }
-
-            $links = array();
-
-            for ($i = 1; $i <= $n; $i++) {
-                $links[] = array_shift($this->_links_page);
-            }
-
-            $html = $this->_convertCharset(join($this->_links_delimiter, $links));
-
-            if ($this->_is_our_bot) {
-                $html = '<sape_noindex>' . $html . '</sape_noindex>';
-            }
-        } else {
-            $html = $this->_links_page;
-            if ($this->_is_our_bot) {
-                $html .= '<sape_noindex></sape_noindex>';
-            }
-        }
-
-        $html = $this->_return_html($html);
 
         return $html;
     }
@@ -732,7 +853,7 @@ class SAPE_client extends SAPE_base
      * - Примечание: начиная с версии 1.2.2 второй аргумент $offset убран. Если
      * передавать его согласно старой сигнатуре, то он будет проигнорирован.
      *
-     * @param int $n Количествово ссылок, которые нужно вывести в текущем блоке
+     * @param int   $n       Количество ссылок, которые нужно вывести в текущем блоке
      * @param array $options Опции
      *
      * <code>
@@ -759,7 +880,7 @@ class SAPE_client extends SAPE_base
     {
 
         $numargs = func_num_args();
-        $args = func_get_args();
+        $args    = func_get_args();
 
         //Проверяем аргументы для старой сигнатуры вызова
         if (2 == $numargs) {           // return_links($n, $options)
@@ -778,10 +899,10 @@ class SAPE_client extends SAPE_base
             $options = array();
         }
 
-        $defaults = array();
-        $defaults['block_no_css'] = false;
+        $defaults                      = array();
+        $defaults['block_no_css']      = false;
         $defaults['block_orientation'] = 1;
-        $defaults['block_width'] = '';
+        $defaults['block_width']       = '';
 
         $ext_options = array();
         if (isset($this->_block_tpl_options) && is_array($this->_block_tpl_options)) {
@@ -804,9 +925,9 @@ class SAPE_client extends SAPE_base
 
         $total_page_links = count($this->_links_page);
 
-        $need_show_obligatory_block = false;
+        $need_show_obligatory_block  = false;
         $need_show_conditional_block = false;
-        $n_requested = 0;
+        $n_requested                 = 0;
 
         if (isset($this->_block_ins_itemobligatory)) {
             $need_show_obligatory_block = true;
@@ -843,11 +964,11 @@ class SAPE_client extends SAPE_base
         if (empty($links) && $need_show_obligatory_block == false && $nof_conditional == 0) {
 
             $return_links_options = array(
-                'is_block_links' => true,
+                'is_block_links'      => true,
                 'nof_links_requested' => $n_requested,
                 'nof_links_displayed' => 0,
-                'nof_obligatory' => 0,
-                'nof_conditional' => 0
+                'nof_obligatory'      => 0,
+                'nof_conditional'     => 0
             );
 
             $html = $this->_return_array_links_html($html, $return_links_options);
@@ -877,11 +998,11 @@ class SAPE_client extends SAPE_base
         // Получаем шаблоны в зависимости от ориентации блока
         $block_tpl_parts = $this->_block_tpl[$options['block_orientation']];
 
-        $block_tpl = $block_tpl_parts['block'];
-        $item_tpl = $block_tpl_parts['item'];
+        $block_tpl          = $block_tpl_parts['block'];
+        $item_tpl           = $block_tpl_parts['item'];
         $item_container_tpl = $block_tpl_parts['item_container'];
-        $item_tpl_full = str_replace('{item}', $item_tpl, $item_container_tpl);
-        $items = '';
+        $item_tpl_full      = str_replace('{item}', $item_tpl, $item_container_tpl);
+        $items              = '';
 
         $nof_items_total = count($links);
         foreach ($links as $link) {
@@ -894,9 +1015,9 @@ class SAPE_client extends SAPE_base
             }
 
             if (function_exists('mb_strtoupper') && strlen($this->_sape_charset) > 0) {
-                $header_rest = mb_substr($link_item[3], 1, mb_strlen($link_item[3], $this->_sape_charset) - 1, $this->_sape_charset);
+                $header_rest         = mb_substr($link_item[3], 1, mb_strlen($link_item[3], $this->_sape_charset) - 1, $this->_sape_charset);
                 $header_first_letter = mb_strtoupper(mb_substr($link_item[3], 0, 1, $this->_sape_charset), $this->_sape_charset);
-                $link_item[3] = $header_first_letter . $header_rest;
+                $link_item[3]        = $header_first_letter . $header_rest;
             } elseif (function_exists('ucfirst') && (strlen($this->_sape_charset) == 0 || strpos($this->_sape_charset, '1251') !== false)) {
                 $link_item[3][0] = ucfirst($link_item[3][0]);
             }
@@ -967,14 +1088,14 @@ class SAPE_client extends SAPE_base
 
         //Очищаем незаполненные модификаторы
         $clear_modifiers_regexp = '#\{[a-z\d_\-]+\}#';
-        $html = preg_replace($clear_modifiers_regexp, ' ', $html);
+        $html                   = preg_replace($clear_modifiers_regexp, ' ', $html);
 
         $return_links_options = array(
-            'is_block_links' => true,
+            'is_block_links'      => true,
             'nof_links_requested' => $n_requested,
             'nof_links_displayed' => $n,
-            'nof_obligatory' => ($need_show_obligatory_block == true ? 1 : 0),
-            'nof_conditional' => $nof_conditional
+            'nof_obligatory'      => ($need_show_obligatory_block == true ? 1 : 0),
+            'nof_conditional'     => $nof_conditional
         );
 
         $html = $this->_return_array_links_html($html, $return_links_options);
@@ -983,125 +1104,91 @@ class SAPE_client extends SAPE_base
     }
 
     /**
-     * Обработка html для массива ссылок
+     * Вывод ссылок в обычном виде - текст с разделителем
      *
-     * @param string $html
-     * @param null|array $options
+     * - Примечание: начиная с версии 1.2.2 второй аргумент $offset убран. Если
+     * передавать его согласно старой сигнатуре, то он будет проигнорирован.
      *
-     * @return string
-     */
-    protected function _return_array_links_html($html, $options = null)
-    {
-
-        if (empty($options)) {
-            $options = array();
-        }
-
-        // если запрошена определенная кодировка, и известна кодировка кеша, и они разные, конвертируем в заданную
-        if (
-            strlen($this->_charset) > 0
-            &&
-            strlen($this->_sape_charset) > 0
-            &&
-            $this->_sape_charset != $this->_charset
-            &&
-            function_exists('iconv')
-        ) {
-            $new_html = @iconv($this->_sape_charset, $this->_charset, $html);
-            if ($new_html) {
-                $html = $new_html;
-            }
-        }
-
-        if ($this->_is_our_bot) {
-
-            $html = '<sape_noindex>' . $html . '</sape_noindex>';
-
-            if (isset($options['is_block_links']) && true == $options['is_block_links']) {
-
-                if (!isset($options['nof_links_requested'])) {
-                    $options['nof_links_requested'] = 0;
-                }
-                if (!isset($options['nof_links_displayed'])) {
-                    $options['nof_links_displayed'] = 0;
-                }
-                if (!isset($options['nof_obligatory'])) {
-                    $options['nof_obligatory'] = 0;
-                }
-                if (!isset($options['nof_conditional'])) {
-                    $options['nof_conditional'] = 0;
-                }
-
-                $html = '<sape_block nof_req="' . $options['nof_links_requested'] .
-                    '" nof_displ="' . $options['nof_links_displayed'] .
-                    '" nof_oblig="' . $options['nof_obligatory'] .
-                    '" nof_cond="' . $options['nof_conditional'] .
-                    '">' . $html .
-                    '</sape_block>';
-            }
-        }
-
-        return $html;
-    }
-
-    /**
-     * Финальная обработка html перед выводом ссылок
+     * @param int   $n       Количество ссылок, которые нужно вывести
+     * @param array $options Опции
      *
-     * @param string $html
+     * <code>
+     * $options = array();
+     * $options['as_block'] = (false|true);
+     * // Показывать ли ссылки в виде блока
+     * </code>
+     *
+     * @see return_block_links()
+     * @see return_counter()
      *
      * @return string
      */
-    protected function _return_html($html)
+    public function return_links($n = null, $options = null)
     {
-        if (false == $this->_show_counter_separately) {
-            $html = $this->_return_obligatory_page_content() . $html;
-        }
 
-        return $this->_add_debug_info($html);
-    }
-
-    protected function _add_debug_info($html)
-    {
         if ($this->_debug) {
-            if (!empty($this->_links['__sape_teaser_images_path__'])) {
-                $this->_add_file_content_for_debug($this->_links['__sape_teaser_images_path__']);
-            }
-            $this->_add_file_content_for_debug('.htaccess');
-
-            $html .= $this->_debug_output($this);
-        }
-
-        return $html;
-    }
-
-    protected function _add_file_content_for_debug($file_name)
-    {
-        $path = realpath(
-            rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR)
-            . DIRECTORY_SEPARATOR
-            . strtok($file_name, '?')
-        );
-        $this->_file_contents_for_debug[$file_name]['path'] = $path;
-        if ($path) {
-            $this->_file_contents_for_debug[$file_name]['contents'] = @file_get_contents($path);
-        }
-    }
-
-    /**
-     * Eсли запрошена определенная кодировка, и известна кодировка кеша, и они разные, конвертируем в заданную
-     */
-    protected function _convertCharset($html)
-    {
-        if (strlen($this->_charset) > 0
-            && strlen($this->_sape_charset) > 0
-            && $this->_sape_charset != $this->_charset
-            && function_exists('iconv')
-        ) {
-            $new_html = @iconv($this->_sape_charset, $this->_charset, $html);
-            if ($new_html) {
-                $html = $new_html;
+            if (function_exists('debug_backtrace')) {
+                $this->_return_links_calls[] = debug_backtrace();
+            } else {
+                $this->_return_links_calls = "(function_exists('debug_backtrace')==false";
             }
         }
+
+        $numargs = func_num_args();
+        $args    = func_get_args();
+
+        //Проверяем аргументы для старой сигнатуры вызова
+        if (2 == $numargs) {           // return_links($n, $options)
+            if (!is_array($args[1])) { // return_links($n, $offset) - deprecated!
+                $options = null;
+            }
+        } elseif (2 < $numargs) {        // return_links($n, $offset, $options) - deprecated!
+
+            if (!is_array($options)) {
+                $options = $args[2];
+            }
+        }
+
+        //Опрелелить, как выводить ссылки
+        $as_block = $this->_show_only_block;
+
+        if (is_array($options) && isset($options['as_block']) && false == $as_block) {
+            $as_block = $options['as_block'];
+        }
+
+        if (true == $as_block && isset($this->_block_tpl)) {
+            return $this->return_block_links($n, $options);
+        }
+
+        //-------
+
+        if (is_array($this->_links_page)) {
+
+            $total_page_links = count($this->_links_page);
+
+            if (!is_numeric($n) || $n > $total_page_links) {
+                $n = $total_page_links;
+            }
+
+            $links = array();
+
+            for ($i = 1; $i <= $n; $i++) {
+                $links[] = array_shift($this->_links_page);
+            }
+
+            $html = $this->_convertCharset(join($this->_links_delimiter, $links));
+
+            if ($this->_is_our_bot) {
+                $html = '<sape_noindex>' . $html . '</sape_noindex>';
+            }
+        } else {
+            $html = $this->_links_page;
+            if ($this->_is_our_bot) {
+                $html .= '<sape_noindex></sape_noindex>';
+            }
+        }
+
+        $html = $this->_return_html($html);
 
         return $html;
     }
@@ -1116,24 +1203,24 @@ class SAPE_client extends SAPE_base
             }
         }
 
-        $html = '';
+        $html     = '';
         $template = @$this->_links['__sape_teasers_templates__'][$block_id];
 
         if (count($this->_teasers_page) && false == empty($template)) {
 
             if (count($this->_teasers_page) < $template['n']) {
-                $teasers = $this->_teasers_page;
-                $to_add = $template['n'] - count($this->_teasers_page);
+                $teasers             = $this->_teasers_page;
+                $to_add              = $template['n'] - count($this->_teasers_page);
                 $this->_teasers_page = array();
             } else {
-                $teasers = array_slice($this->_teasers_page, 0, $template['n']);
-                $to_add = 0;
+                $teasers             = array_slice($this->_teasers_page, 0, $template['n']);
+                $to_add              = 0;
                 $this->_teasers_page = array_slice($this->_teasers_page, $template['n']);
             }
 
             foreach ($teasers as $k => $v) {
                 preg_match('#href="(https?://([^"/]+)[^"]*)"#i', $v, $url);
-                $url = empty($url[1]) ? '' : $url[1];
+                $url         = empty($url[1]) ? '' : $url[1];
                 $teasers[$k] = str_replace('{u}', $url, $template['bi'] . $v . $template['ai']);
             }
 
@@ -1147,12 +1234,15 @@ class SAPE_client extends SAPE_base
             );
 
             $this->_teasers_css_showed = true;
-        } elseif ($this->_is_our_bot || $this->_force_show_code) {
-            $html = $this->_links['__sape_new_teasers_block__'] . '<!-- ' . $block_id . ' -->';
-        } elseif (!empty($template)) {
-            $html = str_replace('{id}', $block_id, $template['f']);
         } else {
-            $this->_raise_error("Нет информации по блоку $block_id, обратитесь в службу поддержки");
+            if ($this->_is_our_bot || $this->_force_show_code) {
+                $html = $this->_links['__sape_new_teasers_block__'] . '<!-- ' . $block_id . ' -->';
+            }
+            if (!empty($template)) {
+                $html .= str_replace('{id}', $block_id, $template['f']);
+            } else {
+                $this->_raise_error("Нет информации по блоку $block_id, обратитесь в службу поддержки");
+            }
         }
 
         if ($this->_is_our_bot) {
@@ -1195,9 +1285,18 @@ class SAPE_client extends SAPE_base
     protected function _get_db_file()
     {
         if ($this->_multi_site) {
-            return dirname(__FILE__) . '/' . $this->_host . '.links.db';
+            return dirname(__FILE__) . '/' . $this->_host . '.links' . $this->_get_save_filename_prefix() . '.db';
         } else {
-            return dirname(__FILE__) . '/links.db';
+            return dirname(__FILE__) . '/links' . $this->_get_save_filename_prefix() . '.db';
+        }
+    }
+
+    protected function _get_meta_file()
+    {
+        if ($this->_multi_site) {
+            return dirname(__FILE__) . '/' . $this->_host . '.links.meta.db';
+        } else {
+            return dirname(__FILE__) . '/links.meta.db';
         }
     }
 
@@ -1281,12 +1380,57 @@ class SAPE_client extends SAPE_base
 
         foreach ($check_blocks as $block_name) {
 
-            $var_name = '__sape_block_ins_' . $block_name . '__';
+            $var_name  = '__sape_block_ins_' . $block_name . '__';
             $prop_name = '_block_ins_' . $block_name;
 
             if (isset($this->_links[$var_name]) && strlen($this->_links[$var_name]) > 0) {
                 $this->$prop_name = $this->_links[$var_name];
             }
+        }
+    }
+
+    protected function _uncode_data($data)
+    {
+        if ($this->_format == 'php-require') {
+            $data1 = str_replace('<?php return ', '', $data);
+            eval('$data = ' . $data1 . ';');
+            return $data;
+        }
+
+        return @unserialize($data);
+    }
+
+    protected function _code_data($data)
+    {
+        if ($this->_format == 'php-require') {
+            return var_export($data, true);
+        }
+
+        return @serialize($data);
+    }
+
+    protected function _save_data($data, $filename = '')
+    {
+        if ($this->_split_data_file) {
+            $directory = dirname(__FILE__) . '/';
+            $hashArray = array();
+            $data = $this->_uncode_data($data);
+            foreach ($data as $url => $item) {
+                if (preg_match('/\_\_.+\_\_/mu', $url)) {
+                    $currentFile = 'links.meta.db';
+                } else {
+                    $currentFile = 'links.' . crc32($url) % 100 . '.db';
+                }
+                if ($this->_multi_site) {
+                    $currentFile = $this->_host . '.' . $currentFile;
+                }
+                $hashArray[$currentFile][$url] = $item;
+            }
+            foreach ($hashArray as $file => $array) {
+                $this->_write($directory . $file, $this->_code_data($array));
+            }
+        } else {
+            parent::_save_data($data, $filename = '');
         }
     }
 }
@@ -1297,9 +1441,9 @@ class SAPE_client extends SAPE_base
 class SAPE_context extends SAPE_base
 {
 
-    protected $_words = array();
-    protected $_words_page = array();
-    protected $_user_agent = 'SAPE_Context PHP';
+    protected $_words       = array();
+    protected $_words_page  = array();
+    protected $_user_agent  = 'SAPE_Context PHP';
     protected $_filter_tags = array('a', 'textarea', 'select', 'script', 'style', 'label', 'noscript', 'noindex', 'button');
 
     protected $_debug_actions = array();
@@ -1311,84 +1455,6 @@ class SAPE_context extends SAPE_base
     }
 
     /**
-     * Замена слов
-     */
-    public function replace_in_page($buffer)
-    {
-
-        $this->_debug_action_start();
-        $this->_debug_action_append('START: replace_in_page()');
-
-        $s_globals = new SAPE_globals();
-
-        if (!$s_globals->page_obligatory_output_shown()
-            && isset($this->_page_obligatory_output)
-            && !empty($this->_page_obligatory_output)
-        ) {
-
-            $split_content = preg_split('/(?smi)(<\/?body[^>]*>)/', $buffer, -1, PREG_SPLIT_DELIM_CAPTURE);
-            if (count($split_content) == 5) {
-                $buffer = $split_content[0] . $split_content[1] . $split_content[2]
-                    . (false == $this->_show_counter_separately ? $this->_return_obligatory_page_content() : '')
-                    . $split_content[3] . $split_content[4];
-                unset($split_content);
-
-                $s_globals->page_obligatory_output_shown(true);
-            }
-        }
-
-        if (count($this->_words_page) > 0) {
-            //разбиваем строку по sape_index
-            //Проверяем есть ли теги sape_index
-            $split_content = preg_split('/(?smi)(<\/?sape_index>)/', $buffer, -1);
-            $cnt_parts = count($split_content);
-            if ($cnt_parts > 1) {
-                //Если есть хоть одна пара sape_index, то начинаем работу
-                if ($cnt_parts >= 3) {
-                    for ($i = 1; $i < $cnt_parts; $i = $i + 2) {
-                        $split_content[$i] = $this->replace_in_text_segment($split_content[$i]);
-                    }
-                }
-                $buffer = implode('', $split_content);
-
-                $this->_debug_action_append($cnt_parts, 'Split by Sape_index cnt_parts=');
-            } else {
-                //Если не нашли sape_index, то пробуем разбить по BODY
-                $split_content = preg_split('/(?smi)(<\/?body[^>]*>)/', $buffer, -1, PREG_SPLIT_DELIM_CAPTURE);
-                //Если нашли содержимое между body
-                if (count($split_content) == 5) {
-                    $split_content[0] = $split_content[0] . $split_content[1];
-                    $split_content[1] = $this->replace_in_text_segment($split_content[2]);
-                    $split_content[2] = $split_content[3] . $split_content[4];
-                    unset($split_content[3]);
-                    unset($split_content[4]);
-                    $buffer = $split_content[0] . $split_content[1] . $split_content[2];
-
-                    $this->_debug_action_append('Split by BODY');
-                } else {
-                    //Если не нашли sape_index и не смогли разбить по body
-                    $this->_debug_action_append('Cannot split by BODY');
-                }
-            }
-        } else {
-            if (!$this->_is_our_bot && !$this->_force_show_code && !$this->_debug) {
-                $buffer = preg_replace('/(?smi)(<\/?sape_index>)/', '', $buffer);
-            } else {
-                if (isset($this->_words['__sape_new_url__']) && strlen($this->_words['__sape_new_url__'])) {
-                    $buffer .= $this->_words['__sape_new_url__'];
-                }
-            }
-
-            $this->_debug_action_append('No word\'s for page');
-        }
-
-        $this->_debug_action_append('STOP: replace_in_page()');
-        $buffer .= $this->_debug_action_output();
-
-        return $buffer;
-    }
-
-    /**
      * Начать сбор дебаг-информации
      */
     protected function _debug_action_start()
@@ -1397,7 +1463,7 @@ class SAPE_context extends SAPE_base
             return;
         }
 
-        $this->_debug_actions = array();
+        $this->_debug_actions   = array();
         $this->_debug_actions[] = $this->_get_full_user_agent_string();
     }
 
@@ -1421,6 +1487,25 @@ class SAPE_context extends SAPE_base
     }
 
     /**
+     * Вывод дебаг-информации
+     *
+     * @return string
+     */
+    protected function _debug_action_output()
+    {
+
+        if (!$this->_debug || empty($this->_debug_actions)) {
+            return '';
+        }
+
+        $debug_info = $this->_debug_output($this->_debug_actions);
+
+        $this->_debug_actions = array();
+
+        return $debug_info;
+    }
+
+    /**
      * Замена слов в куске текста и обрамляет его тегами sape_index
      */
     public function replace_in_text_segment($text)
@@ -1438,19 +1523,19 @@ class SAPE_context extends SAPE_base
             foreach ($this->_words_page as $n => $sentence) {
                 //Заменяем все сущности на символы
                 $special_chars = array(
-                    '&amp;' => '&',
+                    '&amp;'  => '&',
                     '&quot;' => '"',
                     '&#039;' => '\'',
-                    '&lt;' => '<',
-                    '&gt;' => '>'
+                    '&lt;'   => '<',
+                    '&gt;'   => '>'
                 );
-                $sentence = strip_tags($sentence);
-                $sentence = strip_tags($sentence);
-                $sentence = str_replace(array_keys($special_chars), array_values($special_chars), $sentence);
+                $sentence      = strip_tags($sentence);
+                $sentence      = strip_tags($sentence);
+                $sentence      = str_replace(array_keys($special_chars), array_values($special_chars), $sentence);
 
                 //Преобразуем все спец символы в сущности
                 $htsc_charset = empty($this->_charset) ? 'windows-1251' : $this->_charset;
-                $quote_style = ENT_COMPAT;
+                $quote_style  = ENT_COMPAT;
                 if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
                     $quote_style = ENT_COMPAT | ENT_HTML401;
                 }
@@ -1458,12 +1543,12 @@ class SAPE_context extends SAPE_base
                 $sentence = htmlspecialchars($sentence, $quote_style, $htsc_charset);
 
                 //Квотируем
-                $sentence = preg_quote($sentence, '/');
+                $sentence      = preg_quote($sentence, '/');
                 $replace_array = array();
                 if (preg_match_all('/(&[#a-zA-Z0-9]{2,6};)/isU', $sentence, $out)) {
                     for ($i = 0; $i < count($out[1]); $i++) {
-                        $unspec = $special_chars[$out[1][$i]];
-                        $real = $out[1][$i];
+                        $unspec                 = $special_chars[$out[1][$i]];
+                        $real                   = $out[1][$i];
                         $replace_array[$unspec] = $real;
                     }
                 }
@@ -1483,7 +1568,7 @@ class SAPE_context extends SAPE_base
 
             if (count($source_sentences) > 0) {
 
-                $content = '';
+                $content   = '';
                 $open_tags = array(); //Открытые забаненые тэги
                 $close_tag = ''; //Название текущего закрывающего тэга
 
@@ -1544,7 +1629,7 @@ class SAPE_context extends SAPE_base
                                 $this->_debug_action_append($tag_name, 'added to open_tags, stop replacement');
                             }
                         }
-                    } else {
+                    } elseif (count($open_tags) == 0) {
                         //Если нет названия тега, то считаем, что перед нами текст
                         foreach ($source_sentences as $n => $sentence) {
                             if (preg_match('/' . $sentence . '/', $part) == 1) {
@@ -1597,30 +1682,98 @@ class SAPE_context extends SAPE_base
     }
 
     /**
-     * Вывод дебаг-информации
-     *
-     * @return string
+     * Замена слов
      */
-    protected function _debug_action_output()
+    public function replace_in_page($buffer)
     {
 
-        if (!$this->_debug || empty($this->_debug_actions)) {
-            return '';
+        $this->_debug_action_start();
+        $this->_debug_action_append('START: replace_in_page()');
+
+        $s_globals = new SAPE_globals();
+
+        if (!$s_globals->page_obligatory_output_shown()
+            && isset($this->_page_obligatory_output)
+            && !empty($this->_page_obligatory_output)
+        ) {
+
+            $split_content = preg_split('/(?smi)(<\/?body[^>]*>)/', $buffer, -1, PREG_SPLIT_DELIM_CAPTURE);
+            if (count($split_content) == 5) {
+                $buffer = $split_content[0] . $split_content[1] . $split_content[2]
+                          . (false == $this->_show_counter_separately ? $this->_return_obligatory_page_content() : '')
+                          . $split_content[3] . $split_content[4];
+                unset($split_content);
+
+                $s_globals->page_obligatory_output_shown(true);
+            }
         }
 
-        $debug_info = $this->_debug_output($this->_debug_actions);
+        if (count($this->_words_page) > 0) {
+            //разбиваем строку по sape_index
+            //Проверяем есть ли теги sape_index
+            $split_content = preg_split('/(?smi)(<\/?sape_index>)/', $buffer, -1);
+            $cnt_parts     = count($split_content);
+            if ($cnt_parts > 1) {
+                //Если есть хоть одна пара sape_index, то начинаем работу
+                if ($cnt_parts >= 3) {
+                    for ($i = 1; $i < $cnt_parts; $i = $i + 2) {
+                        $split_content[$i] = $this->replace_in_text_segment($split_content[$i]);
+                    }
+                }
+                $buffer = implode('', $split_content);
 
-        $this->_debug_actions = array();
+                $this->_debug_action_append($cnt_parts, 'Split by Sape_index cnt_parts=');
+            } else {
+                //Если не нашли sape_index, то пробуем разбить по BODY
+                $split_content = preg_split('/(?smi)(<\/?body[^>]*>)/', $buffer, -1, PREG_SPLIT_DELIM_CAPTURE);
+                //Если нашли содержимое между body
+                if (count($split_content) == 5) {
+                    $split_content[0] = $split_content[0] . $split_content[1];
+                    $split_content[1] = $this->replace_in_text_segment($split_content[2]);
+                    $split_content[2] = $split_content[3] . $split_content[4];
+                    unset($split_content[3]);
+                    unset($split_content[4]);
+                    $buffer = $split_content[0] . $split_content[1] . $split_content[2];
 
-        return $debug_info;
+                    $this->_debug_action_append('Split by BODY');
+                } else {
+                    //Если не нашли sape_index и не смогли разбить по body
+                    $this->_debug_action_append('Cannot split by BODY');
+                }
+            }
+        } else {
+            if (!$this->_is_our_bot && !$this->_force_show_code && !$this->_debug) {
+                $buffer = preg_replace('/(?smi)(<\/?sape_index>)/', '', $buffer);
+            } else {
+                if (isset($this->_words['__sape_new_url__']) && strlen($this->_words['__sape_new_url__'])) {
+                    $buffer .= $this->_words['__sape_new_url__'];
+                }
+            }
+
+            $this->_debug_action_append('No word\'s for page');
+        }
+
+        $this->_debug_action_append('STOP: replace_in_page()');
+        $buffer .= $this->_debug_action_output();
+
+        return $buffer;
     }
 
     protected function _get_db_file()
     {
         if ($this->_multi_site) {
-            return dirname(__FILE__) . '/' . $this->_host . '.words.db';
+            return dirname(__FILE__) . '/' . $this->_host . '.words' . $this->_get_save_filename_prefix() . '.db';
         } else {
-            return dirname(__FILE__) . '/words.db';
+            return dirname(__FILE__) . '/words' . $this->_get_save_filename_prefix() . '.db';
+        }
+    }
+
+    protected function _get_meta_file()
+    {
+        if ($this->_multi_site) {
+            return dirname(__FILE__) . '/' . $this->_host . '.words.meta.db';
+        } else {
+            return dirname(__FILE__) . '/words.meta.db';
         }
     }
 
@@ -1639,6 +1792,51 @@ class SAPE_context extends SAPE_base
         //Есть ли обязательный вывод
         if (isset($this->_words['__sape_page_obligatory_output__'])) {
             $this->_page_obligatory_output = $this->_words['__sape_page_obligatory_output__'];
+        }
+    }
+
+    protected function _uncode_data($data)
+    {
+        if ($this->_format == 'php-require') {
+            $data1 = str_replace('<?php return ', '', $data);
+            eval('$data = ' . $data1 . ';');
+            return $data;
+        }
+
+        return @unserialize($data);
+    }
+
+    protected function _code_data($data)
+    {
+        if ($this->_format == 'php-require') {
+            return var_export($data, true);
+        }
+
+        return @serialize($data);
+    }
+
+    protected function _save_data($data, $filename = '')
+    {
+        if ($this->_split_data_file) {
+            $directory = dirname(__FILE__) . '/';
+            $hashArray = array();
+            $data = $this->_uncode_data($data);
+            foreach ($data as $url => $item) {
+                if (preg_match('/\_\_.+\_\_/mu', $url)) {
+                    $currentFile = 'words.meta.db';
+                } else {
+                    $currentFile = 'words.' . crc32($url) % 100 . '.db';
+                }
+                if ($this->_multi_site) {
+                    $currentFile = $this->_host . '.' . $currentFile;
+                }
+                $hashArray[$currentFile][$url] = $item;
+            }
+            foreach ($hashArray as $file => $array) {
+                $this->_write($directory . $file, $this->_code_data($array));
+            }
+        } else {
+            parent::_save_data($data, $filename = '');
         }
     }
 }
@@ -1700,7 +1898,7 @@ class SAPE_articles extends SAPE_base
                 $host = $options['host'];
             }
         } elseif (strlen($options)) {
-            $host = $options;
+            $host    = $options;
             $options = array();
         }
         if (isset($host) && strlen($host)) {
@@ -1711,18 +1909,7 @@ class SAPE_articles extends SAPE_base
         if (!isset($this->_data['index']['announcements'][$this->_request_uri])) {
             $this->_correct_uri();
         }
-    }
-
-    protected function _get_index()
-    {
-        $this->_set_request_mode('index');
-        $this->_save_file_name = 'articles.db';
-        $this->_load_data();
-    }
-
-    protected function _set_request_mode($mode)
-    {
-        $this->_request_mode = $mode;
+        $this->_split_data_file = false;
     }
 
     protected function _correct_uri()
@@ -1740,7 +1927,7 @@ class SAPE_articles extends SAPE_base
     /**
      * Возвращает анонсы для вывода
      *
-     * @param int $n Сколько анонсов вывести, либо не задано - вывести все
+     * @param int $n      Сколько анонсов вывести, либо не задано - вывести все
      * @param int $offset C какого анонса начинаем вывод(нумерация с 0), либо не задано - с нулевого
      *
      * @return string
@@ -1788,6 +1975,13 @@ class SAPE_articles extends SAPE_base
         return $output;
     }
 
+    protected function _get_index()
+    {
+        $this->_set_request_mode('index');
+        $this->_save_file_name = 'articles.db';
+        $this->_load_data();
+    }
+
     /**
      * Возвращает полный HTML код страницы статьи
      * @return string
@@ -1812,9 +2006,9 @@ class SAPE_articles extends SAPE_base
     {
         $this->_set_request_mode('article');
         //Загружаем статью
-        $article_meta = $this->_data['index']['articles'][$this->_request_uri];
+        $article_meta          = $this->_data['index']['articles'][$this->_request_uri];
         $this->_save_file_name = $article_meta['id'] . '.article.db';
-        $this->_article_id = $article_meta['id'];
+        $this->_article_id     = $article_meta['id'];
         $this->_load_data();
         if (false == $this->_show_counter_separately) {
             $this->_data[$this->_request_mode]['body'] = $this->_return_obligatory_page_content() . $this->_data[$this->_request_mode]['body'];
@@ -1839,20 +2033,88 @@ class SAPE_articles extends SAPE_base
         return $this->_return_html($article_html);
     }
 
-    protected function _get_db_file()
+    protected function _prepare_path_to_images()
     {
-        if ($this->_multi_site) {
-            return dirname(__FILE__) . '/' . $this->_host . '.' . $this->_save_file_name;
-        } else {
-            return dirname(__FILE__) . '/' . $this->_save_file_name;
+        $this->_images_path = dirname(__FILE__) . '/images/';
+        if (!is_dir($this->_images_path)) {
+            // Пытаемся создать папку.
+            if (@mkdir($this->_images_path)) {
+                @chmod($this->_images_path, 0777);    // Права доступа
+            } else {
+                return $this->_raise_error('Нет папки ' . $this->_images_path . '. Создать не удалось. Выставите права 777 на папку.');
+            }
         }
+        if ($this->_multi_site) {
+            $this->_images_path .= $this->_host . '.';
+        }
+
+        return true;
+    }
+
+    protected function _return_image()
+    {
+        $this->_set_request_mode('image');
+        $this->_prepare_path_to_images();
+
+        //Проверим загружена ли картинка
+        $image_meta = $this->_data['index']['images'][$this->_request_uri];
+        $image_path = $this->_images_path . $image_meta['id'] . '.' . $image_meta['ext'];
+
+        if (!is_file($image_path) or filemtime($image_path) > $image_meta['date_updated']) {
+            // Чтобы не повесить площадку клиента и чтобы не было одновременных запросов
+            @touch($image_path, $image_meta['date_updated']);
+
+            $path = $image_meta['dispenser_path'];
+
+            foreach ($this->_server_list as $server) {
+                if ($data = $this->_fetch_remote_file($server, $path)) {
+                    if (substr($data, 0, 12) == 'FATAL ERROR:') {
+                        $this->_raise_error($data);
+                    } else {
+                        // [псевдо]проверка целостности:
+                        if (strlen($data) > 0) {
+                            $this->_write($image_path, $data);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        unset($data);
+        if (!is_file($image_path)) {
+            return $this->_return_not_found();
+        }
+        $image_file_meta = @getimagesize($image_path);
+        $content_type    = isset($image_file_meta['mime']) ? $image_file_meta['mime'] : 'image';
+        if ($this->_headers_enabled) {
+            header('Content-Type: ' . $content_type);
+        }
+
+        return $this->_read($image_path);
+    }
+
+    protected function _fetch_article($template)
+    {
+        if (strlen($this->_charset)) {
+            $template = str_replace('{meta_charset}', $this->_charset, $template);
+        }
+        foreach ($this->_data['index']['template_fields'] as $field) {
+            if (isset($this->_data['article'][$field])) {
+                $template = str_replace('{' . $field . '}', $this->_data['article'][$field], $template);
+            } else {
+                $template = str_replace('{' . $field . '}', '', $template);
+            }
+        }
+
+        return ($template);
     }
 
     protected function _get_template($template_url, $templateId)
     {
         //Загрузим индекс если есть
         $this->_save_file_name = 'tpl.articles.db';
-        $index_file = $this->_get_db_file();
+        $index_file            = $this->_get_db_file();
 
         if (file_exists($index_file)) {
             $this->_data['templates'] = unserialize($this->_read($index_file));
@@ -1906,17 +2168,39 @@ class SAPE_articles extends SAPE_base
         return true;
     }
 
-    protected function _is_valid_template($template_body)
+    public function _fill_mask($data)
     {
-        foreach ($this->_data['index']['template_required_fields'] as $field) {
-            if (strpos($template_body, '{' . $field . '}') === false) {
-                $this->_template_error = 'В шаблоне не хватает поля ' . $field . '.';
+        global $unnecessary;
+        $len                              = strlen($data[0]);
+        $mask                             = str_repeat($this->_mask_code, $len);
+        $unnecessary[$this->_mask_code][] = array(
+            'mask' => $mask,
+            'code' => $data[0],
+            'len'  => $len
+        );
 
-                return false;
+        return $mask;
+    }
+
+    protected function _cut_unnecessary(&$contents, $code, $mask)
+    {
+        global $unnecessary;
+        $this->_mask_code                = $code;
+        $_unnecessary[$this->_mask_code] = array();
+        $contents                        = preg_replace_callback($mask, array($this, '_fill_mask'), $contents);
+    }
+
+    protected function _restore_unnecessary(&$contents, $code)
+    {
+        global $unnecessary;
+        $offset = 0;
+        if (!empty($unnecessary[$code])) {
+            foreach ($unnecessary[$code] as $meta) {
+                $offset   = strpos($contents, $meta['mask'], $offset);
+                $contents = substr($contents, 0, $offset)
+                            . $meta['code'] . substr($contents, $offset + $meta['len']);
             }
         }
-
-        return true;
     }
 
     protected function _cut_template_links($template_body)
@@ -1924,12 +2208,12 @@ class SAPE_articles extends SAPE_base
         if (function_exists('mb_internal_encoding') && strlen($this->_charset) > 0) {
             mb_internal_encoding($this->_charset);
         }
-        $link_pattern = '~(\<a [^\>]*?href[^\>]*?\=["\']{0,1}http[^\>]*?\>.*?\</a[^\>]*?\>|\<a [^\>]*?href[^\>]*?\=["\']{0,1}http[^\>]*?\>|\<area [^\>]*?href[^\>]*?\=["\']{0,1}http[^\>]*?\>)~si';
+        $link_pattern    = '~(\<a [^\>]*?href[^\>]*?\=["\']{0,1}http[^\>]*?\>.*?\</a[^\>]*?\>|\<a [^\>]*?href[^\>]*?\=["\']{0,1}http[^\>]*?\>|\<area [^\>]*?href[^\>]*?\=["\']{0,1}http[^\>]*?\>)~si';
         $link_subpattern = '~\<a |\<area ~si';
-        $rel_pattern = '~[\s]{1}rel\=["\']{1}[^ "\'\>]*?["\']{1}| rel\=[^ "\'\>]*?[\s]{1}~si';
-        $href_pattern = '~[\s]{1}href\=["\']{0,1}(http[^ "\'\>]*)?["\']{0,1} {0,1}~si';
+        $rel_pattern     = '~[\s]{1}rel\=["\']{1}[^ "\'\>]*?["\']{1}| rel\=[^ "\'\>]*?[\s]{1}~si';
+        $href_pattern    = '~[\s]{1}href\=["\']{0,1}(http[^ "\'\>]*)?["\']{0,1} {0,1}~si';
 
-        $allowed_domains = $this->_data['index']['ext_links_allowed'];
+        $allowed_domains   = $this->_data['index']['ext_links_allowed'];
         $allowed_domains[] = $this->_host;
         $allowed_domains[] = 'www.' . $this->_host;
         $this->_cut_unnecessary($template_body, 'C', '|<!--(.*?)-->|smi');
@@ -1945,7 +2229,7 @@ class SAPE_articles extends SAPE_base
                 }
                 if (preg_match($href_pattern, $link, $urls)) {
                     $parsed_url = @parse_url($urls[1]);
-                    $host = isset($parsed_url['host']) ? $parsed_url['host'] : false;
+                    $host       = isset($parsed_url['host']) ? $parsed_url['host'] : false;
                     if (!in_array($host, $allowed_domains) || !$host) {
                         //Обрамляем в тэги noindex
                         $slices[$id] = '<noindex>' . $slices[$id] . '</noindex>';
@@ -1966,7 +2250,7 @@ class SAPE_articles extends SAPE_base
                 }
                 if (preg_match($href_pattern, $link, $urls)) {
                     $parsed_url = @parse_url($urls[1]);
-                    $host = isset($parsed_url['host']) ? $parsed_url['host'] : false;
+                    $host       = isset($parsed_url['host']) ? $parsed_url['host'] : false;
                     if (!in_array($host, $allowed_domains) || !$host) {
                         //вырезаем REL
                         $slices[$id] = preg_replace($rel_pattern, '', $link);
@@ -1984,41 +2268,17 @@ class SAPE_articles extends SAPE_base
         return $template_body;
     }
 
-    protected function _cut_unnecessary(&$contents, $code, $mask)
+    protected function _is_valid_template($template_body)
     {
-        global $unnecessary;
-        $this->_mask_code = $code;
-        $_unnecessary[$this->_mask_code] = array();
-        $contents = preg_replace_callback($mask, array($this, '_fill_mask'), $contents);
-    }
+        foreach ($this->_data['index']['template_required_fields'] as $field) {
+            if (strpos($template_body, '{' . $field . '}') === false) {
+                $this->_template_error = 'В шаблоне не хватает поля ' . $field . '.';
 
-    protected function _restore_unnecessary(&$contents, $code)
-    {
-        global $unnecessary;
-        $offset = 0;
-        if (!empty($unnecessary[$code])) {
-            foreach ($unnecessary[$code] as $meta) {
-                $offset = strpos($contents, $meta['mask'], $offset);
-                $contents = substr($contents, 0, $offset)
-                    . $meta['code'] . substr($contents, $offset + $meta['len']);
-            }
-        }
-    }
-
-    protected function _fetch_article($template)
-    {
-        if (strlen($this->_charset)) {
-            $template = str_replace('{meta_charset}', $this->_charset, $template);
-        }
-        foreach ($this->_data['index']['template_fields'] as $field) {
-            if (isset($this->_data['article'][$field])) {
-                $template = str_replace('{' . $field . '}', $this->_data['article'][$field], $template);
-            } else {
-                $template = str_replace('{' . $field . '}', '', $template);
+                return false;
             }
         }
 
-        return ($template);
+        return true;
     }
 
     protected function _return_html($html)
@@ -2033,84 +2293,9 @@ class SAPE_articles extends SAPE_base
         return $html;
     }
 
-    protected function _return_image()
-    {
-        $this->_set_request_mode('image');
-        $this->_prepare_path_to_images();
-
-        //Проверим загружена ли картинка
-        $image_meta = $this->_data['index']['images'][$this->_request_uri];
-        $image_path = $this->_images_path . $image_meta['id'] . '.' . $image_meta['ext'];
-
-        if (!is_file($image_path) or filemtime($image_path) > $image_meta['date_updated']) {
-            // Чтобы не повесить площадку клиента и чтобы не было одновременных запросов
-            @touch($image_path, $image_meta['date_updated']);
-
-            $path = $image_meta['dispenser_path'];
-
-            foreach ($this->_server_list as $server) {
-                if ($data = $this->_fetch_remote_file($server, $path)) {
-                    if (substr($data, 0, 12) == 'FATAL ERROR:') {
-                        $this->_raise_error($data);
-                    } else {
-                        // [псевдо]проверка целостности:
-                        if (strlen($data) > 0) {
-                            $this->_write($image_path, $data);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        unset($data);
-        if (!is_file($image_path)) {
-            return $this->_return_not_found();
-        }
-        $image_file_meta = @getimagesize($image_path);
-        $content_type = isset($image_file_meta['mime']) ? $image_file_meta['mime'] : 'image';
-        if ($this->_headers_enabled) {
-            header('Content-Type: ' . $content_type);
-        }
-
-        return $this->_read($image_path);
-    }
-
-    protected function _prepare_path_to_images()
-    {
-        $this->_images_path = dirname(__FILE__) . '/images/';
-        if (!is_dir($this->_images_path)) {
-            // Пытаемся создать папку.
-            if (@mkdir($this->_images_path)) {
-                @chmod($this->_images_path, 0777);    // Права доступа
-            } else {
-                return $this->_raise_error('Нет папки ' . $this->_images_path . '. Создать не удалось. Выставите права 777 на папку.');
-            }
-        }
-        if ($this->_multi_site) {
-            $this->_images_path .= $this->_host . '.';
-        }
-
-        return true;
-    }
-
     protected function _return_not_found()
     {
         header('HTTP/1.x 404 Not Found');
-    }
-
-    public function _fill_mask($data)
-    {
-        global $unnecessary;
-        $len = strlen($data[0]);
-        $mask = str_repeat($this->_mask_code, $len);
-        $unnecessary[$this->_mask_code][] = array(
-            'mask' => $mask,
-            'code' => $data[0],
-            'len' => $len
-        );
-
-        return $mask;
     }
 
     protected function _get_dispenser_path()
@@ -2118,15 +2303,29 @@ class SAPE_articles extends SAPE_base
         switch ($this->_request_mode) {
             case 'index':
                 return '/?user=' . _SAPE_USER . '&host=' .
-                $this->_host . '&rtype=' . $this->_request_mode;
+                       $this->_host . '&rtype=' . $this->_request_mode;
                 break;
             case 'article':
                 return '/?user=' . _SAPE_USER . '&host=' .
-                $this->_host . '&rtype=' . $this->_request_mode . '&artid=' . $this->_article_id;
+                       $this->_host . '&rtype=' . $this->_request_mode . '&artid=' . $this->_article_id;
                 break;
             case 'image':
                 return $this->image_url;
                 break;
+        }
+    }
+
+    protected function _set_request_mode($mode)
+    {
+        $this->_request_mode = $mode;
+    }
+
+    protected function _get_db_file()
+    {
+        if ($this->_multi_site) {
+            return dirname(__FILE__) . '/' . $this->_host . '.' . $this->_save_file_name;
+        } else {
+            return dirname(__FILE__) . '/' . $this->_save_file_name;
         }
     }
 
@@ -2138,6 +2337,9 @@ class SAPE_articles extends SAPE_base
             $this->_page_obligatory_output = $data['__sape_page_obligatory_output__'];
         }
     }
-}
 
-?>
+    protected function _get_meta_file()
+    {
+        return $this->_get_db_file();
+    }
+}

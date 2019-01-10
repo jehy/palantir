@@ -107,7 +107,7 @@
 
                 <img border=0 src="<?= COMMON_URL; ?>graphic/copyright.gif" alt="&copy;"></a><br>
 
-                <?/*
+                <?
                 if (!defined('_SAPE_USER')) {
                     define('_SAPE_USER', '2679d8db6fb58eb88c77b607fa55e7ac');
                 }
@@ -120,7 +120,7 @@
 
                 $sape = new SAPE_client($opt);
                 $x = $sape->return_links();
-                if ($x) echo 'Спонсоры каталога:<li>' . $x . '</li>';*/
+                if ($x) echo 'Спонсоры каталога:<li>' . $x . '</li>';
                 ?>
             </div>
         </td>
