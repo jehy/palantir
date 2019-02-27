@@ -106,22 +106,6 @@
                 </div>
 
                 <img border=0 src="<?= COMMON_URL; ?>graphic/copyright.gif" alt="&copy;"></a><br>
-
-                <?
-                if (!defined('_SAPE_USER')) {
-                    define('_SAPE_USER', '2679d8db6fb58eb88c77b607fa55e7ac');
-                }
-                require_once(_SAPE_USER . '/sape.php');
-
-                $uri = $_SERVER['REQUEST_URI'];
-                $opt = array();
-                $opt['request_uri'] = $uri;
-                $opt['charset'] = 'UTF-8';
-
-                $sape = new SAPE_client($opt);
-                $x = $sape->return_links();
-                if ($x) echo 'Спонсоры каталога:<li>' . $x . '</li>';
-                ?>
             </div>
         </td>
         <td width=800 valign=top>
