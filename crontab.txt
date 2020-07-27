@@ -1,0 +1,1 @@
+0 0 * * * php /web/palantir/bin/night.php
