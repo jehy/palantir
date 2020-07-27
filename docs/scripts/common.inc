@@ -64,22 +64,7 @@ function shortlink($url, $show = '')
     return '<a href="' . $url . '">' . $show . '</a>';
 }
 
-function f_connect()
-{/*
-    $db = @mysql_connect('localhost', 'palantir', 'gfkfynbh');
-    @mysql_select_db('palantir', $db);
-*/
-    global $mysqli;
-    $mysqli = new mysqli('localhost', 'palantir', 'gfkfynbh', 'palantir');
-
-    if (mysqli_connect_errno()) {
-        echo "Error: Unable to connect to MySQL." . PHP_EOL;
-        echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
-        echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
-        exit;
-    }
-}
-
+include_once('db.inc');
 
 DEFINE(TOP, 30);
 DEFINE(COMMON_URL, 'https://palantir.in/');

@@ -4,6 +4,7 @@ docs/uni/banners/imgs/*.gif
 docs/uni/banners/imgs/*.png
 docs/uni/banners/imgs/*.jpeg
 docs/sitemap.xml
+docs/scripts/db.inc
 
 #sape, linkfeed:
 *links.db
