@@ -4,7 +4,7 @@
 ?>
 <a href="index.php?page=banner&ac=view&site_id=<?= $site_id; ?>">В систему управления баннерами</a><br>
 <?
-$sql = 'select * from banners,sources,users where ((users.login=?)&&(users.password=?)and(users.id=sources.user_id)
+$sql = 'select * from banners,sources,users where ((users.login=?)&&(users.password=sha1(CONCAT(?, "666")))and(users.id=sources.user_id)
 and(banners.site_id=sources.id) and(banners.id=?))';
 
 

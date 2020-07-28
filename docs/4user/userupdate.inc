@@ -32,7 +32,7 @@
     if (!$error) {
         setcookie("password", $passwordx);
         setcookie("login", $loginx);
-        $sql = 'update users set login=?, password=?, email=?,nick=? where login=?';
+        $sql = 'update users set login=?, password=sha1(CONCAT(?, "666")), email=?,nick=? where login=?';
 
         $stmt = $mysqli->prepare($sql);
         $stmt->bind_param('sssss', $loginx, $password, $emailx, $nickx, $login);

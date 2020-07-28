@@ -85,7 +85,7 @@ if (@$step != 2) {
     else {
         $sql = 'select sources.id,users.id as user,email,nick,login,password from users,sources where((users.id=sources.user_id)and((1=0) ';
         if ($reveal['login']) $sql .= 'or(login=?)';
-        if ($reveal['password']) $sql .= 'or(password=?)';
+        if ($reveal['password']) $sql .= 'or(password=sha1(CONCAT(?, "666")))';
         if ($reveal['nick']) $sql .= 'or(nick=?)';
         if ($reveal['email']) $sql .= 'or(email=?)';
         if ($reveal['url']) $sql .= 'or(url=?)';

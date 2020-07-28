@@ -1,7 +1,7 @@
 <a href='index.php??page=user'>Вернуться в систему администрирования</a><br>
 <a href="index.php?page=banner">В систему управления баннерами</a><br>
 <?
-$sql = "select sources.name from users,sources where ((login=?)&&(password=?)) and sources.id=?";
+$sql = "select sources.name from users,sources where ((login=?)&&(password=sha1(CONCAT(?, "666")))) and sources.id=?";
 
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param('ssi', $login, $password, $my_id);

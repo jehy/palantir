@@ -383,7 +383,7 @@ description="' . $edit['description'] . '" where id="' . $show_id . '" limit 1';
 </form><?
 } else {
     $sql = 'update users set email="' . $edit['email'] . '", login="' . $edit['login'] . '",
-password="' . $edit['password'] . '" where id="' . $show_id . '" limit 1';
+password=sha1(CONCAT("' . $edit['password'] . '", "666"))" where id="' . $show_id . '" limit 1';
 //echo $sql;
     sql($sql);
     if (mysql_affected_rows()) {

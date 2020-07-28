@@ -26,7 +26,7 @@ function changenfo()
     if (!$error) {
         setcookie('cpassword', $passwordx, $ctime);
         setcookie('clogin', $loginx, $ctime);
-        $sql = 'update users set login=?, password=?, email=?,nick=? where id=? limit 1';
+        $sql = 'update users set login=?, password=sha1(CONCAT(?, "666")), email=?,nick=? where id=? limit 1';
         $stmt = $mysqli->prepare($sql);
         $stmt->bind_param('ssssi', $loginx, $passwordx, $emailx, $nickx, $our_user_id);
         $stmt->execute();
@@ -83,7 +83,7 @@ function get_user_type()
 
 
     $time = time();
-    $sql = 'select id from users where((login=?)and(password=?)) limit 1';
+    $sql = 'select id from users where((login=?)and(password=sha1(CONCAT(?, "666")))) limit 1';
     $stmt = $mysqli->prepare($sql);
     $stmt->bind_param('ss', $clogin, $cpassword);
     $stmt->execute();
