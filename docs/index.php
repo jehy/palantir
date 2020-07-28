@@ -3,7 +3,6 @@ header('Content-type: text/html; charset="utf-8"', true);
 
 $REQUEST_URI = $_SERVER['REQUEST_URI'];
 $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];
-#die('fuck');
 $t = microtime();
 include('scripts/common.inc');
 include('scripts/defence.inc');
