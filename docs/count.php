@@ -43,6 +43,11 @@ $stmt->bind_param('si', $ip_w, $id);
 $stmt->execute();
 $result = $stmt->get_result();
 
+$buggyRequest = strpos($cid, '%22') || strpos($cid, '"') || strpos($cid, "'");
+if ($buggyRequest != false) {
+    $cid = substr($cid, 0, $buggyRequest);
+}
+
 if ($cid != '') {
     if (!$today_hits && !$total_hits && !$today_hosts && !$total_hosts) {
         $c = $cid . ' - static ';
@@ -105,8 +110,7 @@ function redirectToCounter($pic, $img, $id, $cid, $today_hits, $total_hits, $tod
         $stmt->bind_param('i', $id);
         $stmt->execute();
         $result = $stmt->get_result();
-        if (!$result->num_rows)
-        {
+        if (!$result->num_rows) {
             cnt_show_error('site not found');
             return;
         }
