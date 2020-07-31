@@ -288,13 +288,13 @@ if (sizeof($engines))
                     <td class="bgwhite" colspan="3">&nbsp;</td>
                 </tr><?
                 foreach ($visits as $site => $urls) {
-                    if (sizeof($visits[$site]['urls']) > 1)## If many
+                    if ($visits[$site]['urls'] && sizeof($visits[$site]['urls']) > 1)## If many
                     {
                         echo '<tr class="bgdark"><td style="padding-left:20px;" colspan="2" class="bgdark">' . shortlink($site) . '</td><td>' . $visits[$site]['count'] . '</td></tr>';
                         foreach ($visits[$site]['urls'] as $addr => $val) {
                             echo '<tr class="bgdark"><td class="bgdark" style="padding-left:20px;" width="60px">+</td><td>' . shortlink($site . $addr, $addr) . '</td><td >' . $val . '</td></tr>';
                         }
-                    } elseif (sizeof($visits[$site]['urls'])) {
+                    } elseif ($visits[$site]['urls'] && sizeof($visits[$site]['urls'])) {
                         foreach ($visits[$site]['urls'] as $addr => $val) {
                             echo '<tr class="bgdark"><td class="bgdark" style="padding-left:20px;" colspan="2">' . shortlink($site . $addr, $site . $addr) . '</td><td >' . $val . '</td></tr>';
                         }
