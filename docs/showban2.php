@@ -57,7 +57,7 @@ if ($result->num_rows) {
     $sql = 'insert into go values(?,?,?,?,?,?)';
 
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param('siisss', $rand, $row[ban_id], $row[target_id], $from, $url, $ip_w);
+    $stmt->bind_param('siisss', $rand, $row['ban_id'], $row['target_id'], $from, $url, $ip_w);
     $stmt->execute();
 
     Header('Location: ' . $mirror['url'] . 'banners/imgs/img_' . $row['ban_id'] . '.' . $row['ext']);

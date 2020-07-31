@@ -1,14 +1,14 @@
 <?
 error_reporting(E_ALL & ~E_NOTICE);
-$id = $_GET['id'];
-$referer = $_GET['referer'];
-$img = $_GET['img'];
-$pic = $_GET['pic'];
-$cid = $_GET['cid'];
-$today_hits = $_GET['today_hits'];
-$total_hits = $_GET['total_hits'];
-$today_hosts = $_GET['today_hosts'];
-$total_hosts = $_GET['total_hosts'];
+$id = trim($_GET['id']);
+$referer = trim($_GET['referer']);
+$img = trim($_GET['img']);
+$pic = trim($_GET['pic']);
+$cid = trim($_GET['cid']);
+$today_hits = trim($_GET['today_hits']);
+$total_hits = trim($_GET['total_hits']);
+$today_hosts = trim($_GET['today_hosts']);
+$total_hosts = trim($_GET['total_hosts']);
 
 if (!mb_check_encoding($referer, 'UTF-8'))
     $referer = mb_convert_encoding($referer, 'UTF-8');
@@ -74,14 +74,16 @@ $stmt = $mysqli->prepare($sql);
 $stmt->bind_param('si', $cid, $id);
 $stmt->execute();
 
-if ($mysqli->affected_rows != 1)
-    cnt_show_error('site not found');
-else {
+function redirectToCounter($pic, $img, $id, $cid, $today_hits, $total_hits, $today_hosts, $total_hosts)
+{
+    global $mysqli;
     $mirror = get_mirror();
     ##################   OLD, SAVED FOR COMPATIBILITY
     if ($pic) {
         Header('location: ' . $mirror['url'] . 'counters/standard/' . $pic);
-    } elseif ($img) {
+        return;
+    }
+    if ($img) {
         $sql = 'select today_hosts,today_hits,total_hosts,total_hits from sources where id=? limit 1';
         $stmt = $mysqli->prepare($sql);
         $stmt->bind_param('i', $id);
@@ -90,23 +92,36 @@ else {
         if ($result->num_rows)
             $row = $result->fetch_array(MYSQLI_ASSOC);
         Header('location: ' . $mirror['url'] . 'counters/count.php?cid=' . $img . '&today_hosts=' . $row['today_hosts'] . '&total_hosts=' . $row['total_hosts']);
-    } ####################   NEW
-    elseif ($cid) {
+        return;
+    }
+    ####################   NEW
+    if ($cid) {
         if (!$today_hits && !$total_hits && !$today_hosts && !$total_hosts) {
             Header('location: ' . $mirror['url'] . 'counters/standard/' . $cid);
-        } else {
-            $sql = 'select today_hosts,today_hits,total_hosts,total_hits from sources where id=? limit 1';
-            $stmt = $mysqli->prepare($sql);
-            $stmt->bind_param('i', $id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if ($result->num_rows)
-                $row = $result->fetch_array(MYSQLI_ASSOC);
-            if ($today_hosts & $today_hits & $total_hosts) {
-                Header('location: ' . $mirror['url'] . 'counters/count.php?cid=' . $cid . '&today_hits=' . $row['today_hits'] . '&today_hosts=' . $row['today_hosts'] . '&total_hosts=' . $row['total_hosts']);
-            } else#if ($today_hosts & $total_hosts)
-                Header('location: ' . $mirror['url'] . 'counters/count.php?cid=' . $cid . '&today_hosts=' . $row['today_hosts'] . '&total_hosts=' . $row['total_hosts']);
+            return;
         }
+        $sql = 'select today_hosts,today_hits,total_hosts,total_hits from sources where id=? limit 1';
+        $stmt = $mysqli->prepare($sql);
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if (!$result->num_rows)
+        {
+            cnt_show_error('site not found');
+            return;
+        }
+        $row = $result->fetch_array(MYSQLI_ASSOC);
+        if ($today_hosts & $today_hits & $total_hosts) {
+            Header('location: ' . $mirror['url'] . 'counters/count.php?cid=' . $cid . '&today_hits=' . $row['today_hits'] . '&today_hosts=' . $row['today_hosts'] . '&total_hosts=' . $row['total_hosts']);
+            return;
+        }
+        Header('location: ' . $mirror['url'] . 'counters/count.php?cid=' . $cid . '&today_hosts=' . $row['today_hosts'] . '&total_hosts=' . $row['total_hosts']);
     }
+}
+
+if ($mysqli->affected_rows != 1) {
+    cnt_show_error('site not found');
+} else {
+    redirectToCounter($pic, $img, $id, $cid, $today_hits, $total_hits, $today_hosts, $total_hosts);
 }
 ?>

@@ -98,11 +98,11 @@ while ($row = mysql_fetch_array($result)) {
         </tr>
     </table>
     <input type='button' class='menu' value='удалить'
-           onClick="window.location.href = 'index.php?page=admin&ac=mirrors&step=4&nid=<?= $row[id]; ?>'">
+           onClick="window.location.href = 'index.php?page=admin&ac=mirrors&step=4&nid=<?= $row['id']; ?>'">
     <input type='button' class='menu' value='редактировать'
-           onClick="window.location.href = 'index.php?page=admin&ac=mirrors&step=2&nid=<?= $row[id]; ?>'">
+           onClick="window.location.href = 'index.php?page=admin&ac=mirrors&step=2&nid=<?= $row['id']; ?>'">
     <input type='button' class='menu' value='обновить'
-           onClick="window.location.href = 'index.php?page=admin&ac=mirrors&step=2&nid=<?= $row[id]; ?>'"><br><br>
+           onClick="window.location.href = 'index.php?page=admin&ac=mirrors&step=2&nid=<?= $row['id']; ?>'"><br><br>
     <br>
     <hr>
     <?

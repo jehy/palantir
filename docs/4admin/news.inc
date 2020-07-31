@@ -41,7 +41,7 @@ if ($step == 3) {
         echo("
 <form action='index.php' method='post'>
 <strong>ID$row[id]</strong>
-<input type='hidden' value='$row[id]' name='nid' size='26'>
+<input type='hidden' value='$row['id']' name='nid' size='26'>
 <strong>текст</strong><br>
 <textarea cols='60' rows='5' name='news[text]'>$row[text]</textarea><br>
 <input type='text' name='news[date]' value='$row[date]'><br>
@@ -67,8 +67,8 @@ $sql = 'select * from p_news order by `id` desc';
 $result = sql($sql);
 while ($row = mysql_fetch_array($result)) {
     echo("
-<input type='button' class='menu' value='стереть' onClick=\"window.location.href = 'index.php?page=admin&ac=news&step=4&nid=$row[id]'\">
-<input type='button' class='menu' value='редактировать' onClick=\"window.location.href = 'index.php?page=admin&ac=news&step=2&nid=$row[id]'\"><br><br>
+<input type='button' class='menu' value='стереть' onClick=\"window.location.href = 'index.php?page=admin&ac=news&step=4&nid=$row['id']'\">
+<input type='button' class='menu' value='редактировать' onClick=\"window.location.href = 'index.php?page=admin&ac=news&step=2&nid=$row['id']'\"><br><br>
 $row[text]<br>
 <div align='right'><em>$row[date], $row[url]</em></div><br><hr>"
     );

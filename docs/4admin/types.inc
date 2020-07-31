@@ -161,7 +161,7 @@ if ($ac == 'meta') {
             while ($row = mysql_fetch_array($result)) {
                 ?>
                 <form action='index.php'>
-                    <strong>ID #<?= $row[id]; ?></strong>
+                    <strong>ID #<?= $row['id']; ?></strong>
                     <input type='hidden' value='<?= $row['id']; ?>' name='id'>
                     <br>Название<br>
                     <input type='text' value='<?= $row['name']; ?>' name='name'>
