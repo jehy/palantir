@@ -43,6 +43,9 @@ $stmt->bind_param('si', $ip_w, $id);
 $stmt->execute();
 $result = $stmt->get_result();
 
+// TODO без этого фикса приходят странные запросы, в которых кусок скрипта счётчика попадает в cid
+// надо бы проверить, что сейчас код счётчика выдаётся корректный
+
 $buggyRequest = strpos($cid, '%22') || strpos($cid, '"') || strpos($cid, "'");
 if ($buggyRequest != false) {
     $cid = substr($cid, 0, $buggyRequest);
