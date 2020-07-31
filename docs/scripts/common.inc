@@ -66,8 +66,8 @@ function shortlink($url, $show = '')
 
 include_once('db.inc');
 
-DEFINE(TOP, 30);
-DEFINE(COMMON_URL, 'https://palantir.in/');
+DEFINE('TOP', 30);
+DEFINE('COMMON_URL', 'https://palantir.in/');
 $max_banner_size = 20;
 $news_to_show = 3;
 $show_news_on_other_pages = 8;

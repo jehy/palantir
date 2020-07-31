@@ -1,7 +1,7 @@
 <a href="index.php?page=admin">К администрированию</a><br>
 <a href="index.php?page=admin&ac=types">К каталогам</a><br>
 <?
-DEFINE(SHOW_META, 1);
+DEFINE('SHOW_META', 1);
 die('Not rewritten!');
 function FromYandex($text)
 {
